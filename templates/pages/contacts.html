@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Aloqa — AtirMagaz{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs" aria-label="Yo'l"><a href="{% url 'shop:home' %}">Bosh sahifa</a><span aria-hidden="true">/</span><span>Aloqa</span></nav>
+    <h1>Biz bilan bog'laning</h1>
+    <p>Atir tanlashda maslahat kerakmi, buyurtma bo'yicha savol bormi yoki hamkorlik taklif qilmoqchimisiz — yozing, 15 daqiqa ichida javob beramiz.</p>
+  </div>
+</section>
+
+<div class="container contact-grid">
+  <div class="contact-cards">
+    <a class="contact-card" href="tel:{{ site.phone_raw }}"><svg class="ic"><use href="#i-phone"/></svg><div><span>Qo'ng'iroq qiling — {{ site.hours|lower }}</span><b>{{ site.phone }}</b></div></a>
+    <a class="contact-card" href="{{ site.telegram }}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-telegram"/></svg><div><span>Telegram — tezkor javob</span><b>@atirmagaz</b></div></a>
+    <a class="contact-card" href="{{ site.instagram }}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-instagram"/></svg><div><span>Instagram — yangiliklar va sharhlar</span><b>@atirmagaz</b></div></a>
+    <a class="contact-card" href="mailto:{{ site.email }}"><svg class="ic"><use href="#i-mail"/></svg><div><span>Elektron pochta</span><b>{{ site.email }}</b></div></a>
+    <div class="contact-card"><svg class="ic"><use href="#i-pin"/></svg><div><span>Bosh butik</span><b>{{ site.address }}</b></div></div>
+  </div>
+
+  <form class="step" method="post" novalidate>
+    {% csrf_token %}
+    <div class="step__head"><span class="step__num"><svg class="ic"><use href="#i-chat"/></svg></span><h2>Xabar yuborish</h2></div>
+    {% if form.errors %}<div class="form-error">Iltimos, belgilangan maydonlarni tekshiring.</div>{% endif %}
+    <div class="form-grid">
+      {% for field in form %}
+        <div class="field {% if field.name == 'message' or field.name == 'topic' %}full{% endif %} {% if field.errors %}field--error{% endif %}">
+          <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+          {{ field }}{{ field.errors }}
+        </div>
+      {% endfor %}
+    </div>
+    <button class="btn btn--dark" type="submit" style="margin-top:18px">Yuborish <svg class="ic"><use href="#i-arrow"/></svg></button>
+  </form>
+</div>
+
+<section class="container" style="padding-bottom:70px">
+  <div class="map">
+    <iframe title="AtirMagaz xaritada" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps?q=41.3111,69.2797&z=15&output=embed"></iframe>
+  </div>
+</section>
+
+<section class="section section--sand" style="padding-top:60px">
+  <div class="container">
+    <div class="section-head"><div><span class="eyebrow">Butiklar</span><h2>Bizning manzillar</h2></div></div>
+    <div class="stores">
+      {% for s in stores %}
+        <div class="store">
+          <h3>{{ s.name }}</h3>
+          <p><svg class="ic"><use href="#i-pin"/></svg><span>{{ s.address }}<br><small>{{ s.landmark }}</small></span></p>
+          <p><svg class="ic"><use href="#i-clock"/></svg>{{ s.hours }}</p>
+          <p><svg class="ic"><use href="#i-phone"/></svg><a href="tel:{{ s.phone|cut:' ' }}">{{ s.phone }}</a></p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

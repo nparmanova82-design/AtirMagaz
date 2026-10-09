@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Sahifa topilmadi — AtirMagaz{% endblock %}
+
+{% block content %}
+<div class="container notfound">
+  <b>404</b>
+  <h1>Bu hid uchib ketibdi</h1>
+  <p>Siz qidirgan sahifa topilmadi. Balki u boshqa manzilga ko'chgandir — katalogdan qidirib ko'ring.</p>
+  <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap">
+    <a class="btn btn--dark" href="{% url 'shop:home' %}">Bosh sahifa</a>
+    <a class="btn btn--outline" href="{% url 'shop:catalog' %}">Katalog</a>
+  </div>
+</div>
+{% endblock %}

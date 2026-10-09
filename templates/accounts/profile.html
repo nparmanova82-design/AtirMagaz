@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load shop_tags %}
+
+{% block title %}Shaxsiy kabinet — AtirMagaz{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs" aria-label="Yo'l"><a href="{% url 'shop:home' %}">Bosh sahifa</a><span aria-hidden="true">/</span><span>Shaxsiy kabinet</span></nav>
+    <h1>Shaxsiy kabinet</h1>
+  </div>
+</section>
+
+<div class="container account">
+  <aside class="account__side">
+    <div class="account__hello">
+      <span class="avatar">{{ user.first_name|default:user.username|first|upper }}</span>
+      <div><b>{{ user.first_name|default:"Mijoz" }}</b><span>{{ user.username }}</span></div>
+    </div>
+    <nav class="account__nav">
+      <a href="#buyurtmalar"><svg class="ic"><use href="#i-bag"/></svg> Buyurtmalarim ({{ orders|length }})</a>
+      <a href="{% url 'shop:wishlist' %}"><svg class="ic"><use href="#i-heart"/></svg> Sevimlilar ({{ wishlist_count }})</a>
+      <a href="#malumotlar"><svg class="ic"><use href="#i-user"/></svg> Ma'lumotlarim</a>
+      <a href="{% url 'orders:track' %}"><svg class="ic"><use href="#i-truck"/></svg> Buyurtma holati</a>
+      {% if user.is_staff %}<a href="{% url 'admin:index' %}"><svg class="ic"><use href="#i-store"/></svg> Boshqaruv paneli</a>{% endif %}
+      <form action="{% url 'accounts:logout' %}" method="post">{% csrf_token %}
+        <button type="submit"><svg class="ic"><use href="#i-arrow"/></svg> Chiqish</button>
+      </form>
+    </nav>
+  </aside>
+
+  <div>
+    <div class="section-head" id="buyurtmalar" style="margin-bottom:20px"><div><span class="eyebrow">Tarix</span><h2>Buyurtmalarim</h2></div></div>
+    {% for order in orders %}
+      <article class="order-card">
+        <div class="order-card__head">
+          <b>{{ order.number }}</b>
+          <time datetime="{{ order.created_at|date:'c' }}">{{ order.created_at|date:"d.m.Y H:i" }}</time>
+          <span class="badge {% if order.status == 'cancelled' %}badge--sale{% elif order.status == 'delivered' %}badge--ok{% else %}badge--soft{% endif %}">{{ order.get_status_display }}</span>
+        </div>
+        <div class="order-card__items">
+          {% for item in order.items.all %}{{ item.title }} · {{ item.volume_label }} × {{ item.quantity }}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+        </div>
+        <div class="order-card__foot"><span class="muted">{{ order.get_delivery_display }} · {{ order.get_payment_display }}</span><b>{{ order.total|som }}</b></div>
+      </article>
+    {% empty %}
+      <div class="empty" style="padding:50px 20px">
+        <svg class="ic"><use href="#i-bag"/></svg>
+        <h3>Hali buyurtma yo'q</h3>
+        <p>Birinchi buyurtmangizga <b>ATIR10</b> promokodi bilan 10% chegirma.</p>
+        <a class="btn btn--dark" href="{% url 'shop:catalog' %}">Katalogga o'tish</a>
+      </div>
+    {% endfor %}
+
+    <form class="step" method="post" id="malumotlar" style="margin-top:40px">
+      {% csrf_token %}
+      <div class="step__head"><span class="step__num"><svg class="ic"><use href="#i-user"/></svg></span><h2>Ma'lumotlarim</h2></div>
+      <div class="form-grid">
+        {% for field in form %}
+          <div class="field {% if field.name == 'email' %}full{% endif %} {% if field.errors %}field--error{% endif %}">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}
+          </div>
+        {% endfor %}
+      </div>
+      <button class="btn btn--dark" type="submit" style="margin-top:18px">Saqlash</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

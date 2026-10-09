@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Kirish — AtirMagaz{% endblock %}
+
+{% block content %}
+<div class="container auth">
+  <div class="auth__card">
+    <span class="eyebrow">Shaxsiy kabinet</span>
+    <h1 style="margin-top:10px">Xush kelibsiz</h1>
+    <p>Buyurtmalaringiz tarixi va ma'lumotlaringiz shu yerda.</p>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}">
+      {% if form.non_field_errors %}<div class="form-error">Telefon raqam yoki parol noto'g'ri.</div>{% endif %}
+      {% for field in form %}
+        <div class="field {% if field.errors %}field--error{% endif %}">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}
+        </div>
+      {% endfor %}
+      <button class="btn btn--dark btn--block" type="submit">Kirish</button>
+    </form>
+    <p class="auth__alt">Hisobingiz yo'qmi? <a href="{% url 'accounts:register' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Ro'yxatdan o'tish</a></p>
+  </div>
+</div>
+{% endblock %}

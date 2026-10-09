@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Atir qo'llanmasi — AtirMagaz{% endblock %}
+{% block description %}Hid oilalari, notalar piramidasi, EDP va EDT farqi, atirni to'g'ri sepish va saqlash — AtirMagaz qo'llanmasi.{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs" aria-label="Yo'l"><a href="{% url 'shop:home' %}">Bosh sahifa</a><span aria-hidden="true">/</span><span>Atir qo'llanmasi</span></nav>
+    <h1>Atir qo'llanmasi</h1>
+    <p>Parfyumeriya tilini o'rganing: hid oilalari, notalar piramidasi va atirni to'g'ri sepish sirlari.</p>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="section-head"><div><span class="eyebrow">1-bob</span><h2>Hid oilalari</h2><p>Har bir atir bitta asosiy «oila»ga mansub. Qaysi oila yoqishini bilsangiz, yangi atir tanlash ancha oson bo'ladi.</p></div></div>
+    <div class="families">
+      {% for f in families %}
+        <a class="family" href="{% url 'shop:catalog' %}?family={{ f.key }}" style="--tint: {{ f.color }}">
+          <span class="family__dot"></span>
+          <span><span class="family__name">{{ f.label }}</span><span class="family__text">{{ f.text }}</span></span>
+          <span class="family__count">{{ f.count }} ta</span>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section--sand">
+  <div class="container">
+    <div class="section-head"><div><span class="eyebrow">2-bob</span><h2>Notalar piramidasi</h2><p>Atir terida bir zumda emas, bosqichma-bosqich ochiladi. Shuning uchun hidni do'konda emas, 2–3 soatdan keyin baholang.</p></div></div>
+    <div class="pyramid">
+      <div class="pyramid__row"><div class="pyramid__label"><b>Yuqori notalar</b><span>0 — 15 daqiqa</span></div><p class="muted">Birinchi taassurot. Odatda sitrus, mevalar va yengil ziravorlar — tez uchib ketadi.</p></div>
+      <div class="pyramid__row"><div class="pyramid__label"><b>Yurak notalari</b><span>15 daqiqa — 4 soat</span></div><p class="muted">Atirning «xarakteri». Gullar, ziravorlar, yashil notalar — kompozitsiyaning markazi.</p></div>
+      <div class="pyramid__row"><div class="pyramid__label"><b>Asos notalari</b><span>4 soatdan kun oxirigacha</span></div><p class="muted">Eng uzoq saqlanadigan iz: yog'och, anbar, vanil, mushk. Aynan shu notalar kiyimda qoladi.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="container content-split" style="padding-top:70px">
+  <div class="prose">
+    <span class="eyebrow">3-bob</span>
+    <h2>Konsentratsiyalar</h2>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Turi</th><th>Atir moylari</th><th>Saqlanishi</th><th>Qachon</th></tr></thead>
+        <tbody>
+          <tr><td><b>Parfum / Extrait</b></td><td>20–30%</td><td>8–12+ soat</td><td>Kechki tadbirlar, sovuq fasl</td></tr>
+          <tr><td><b>Eau de Parfum (EDP)</b></td><td>15–20%</td><td>6–8 soat</td><td>Universal tanlov</td></tr>
+          <tr><td><b>Eau de Toilette (EDT)</b></td><td>8–15%</td><td>3–5 soat</td><td>Kundalik, ofis, yoz</td></tr>
+          <tr><td><b>Eau de Cologne (EDC)</b></td><td>2–5%</td><td>~2 soat</td><td>Tetiklanish, qatlamlash</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <span class="eyebrow" style="margin-top:40px">4-bob</span>
+    <h2 style="margin-top:10px">Atirni qanday to'g'ri sepish kerak?</h2>
+    <ol>
+      <li><strong>Puls nuqtalariga sepining</strong> — bilak, quloq orqasi, bo'yin, tirsak bukilmasi. Bu yerlarda teri iliqroq va hid yaxshiroq ochiladi.</li>
+      <li><strong>Bilaklarni ishqalamang</strong> — bu yuqori notalarni «sindiradi» va hidni o'zgartiradi.</li>
+      <li><strong>Namlangan teriga</strong> — dushdan keyin, hidsiz krem surtilgan teriga sepilgan atir ancha uzoq saqlanadi.</li>
+      <li><strong>Sochga ehtiyotkorlik bilan</strong> — havoga sepib, «bulut» ichidan o'ting. Spirt sochni quritishi mumkin.</li>
+      <li><strong>Me'yorni biling</strong> — EDP uchun 2–4 marta sepish yetarli. Atrofdagilar sizni 1 metrdan sezishi kerak, xonaning narigi chetidan emas.</li>
+    </ol>
+
+    <span class="eyebrow" style="margin-top:40px">5-bob</span>
+    <h2 style="margin-top:10px">Saqlash qoidalari</h2>
+    <ul>
+      <li>Quyosh nuri tushmaydigan, salqin va quruq joyda saqlang.</li>
+      <li>Hammomda saqlamang — namlik va harorat o'zgarishi hidni buzadi.</li>
+      <li>Original qutisida saqlash — eng yaxshi himoya.</li>
+      <li>To'g'ri saqlangan atir 3–5 yil davomida o'z xususiyatlarini yo'qotmaydi.</li>
+    </ul>
+  </div>
+  <aside class="aside-card">
+    <h3>Nazariya yetarli!</h3>
+    <p>Endi amaliyotga o'tamiz: 4 ta savolga javob bering va sizga mos atirlarni ko'rsatamiz.</p>
+    <a class="btn btn--dark btn--block" href="{% url 'shop:quiz' %}"><svg class="ic"><use href="#i-sparkle"/></svg> Atir tanlash testi</a>
+  </aside>
+</div>
+{% endblock %}

@@ -320,6 +320,7 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, reset=False, **options):
+        quiet = options["verbosity"] == 0
         if reset:
             Review.objects.all().delete()
             Variant.objects.all().delete()
@@ -391,8 +392,10 @@ class Command(BaseCommand):
         User = get_user_model()
         if not User.objects.filter(username="admin").exists():
             User.objects.create_superuser("admin", "admin@atirmagaz.uz", "admin12345")
-            self.stdout.write("Admin yaratildi: admin / admin12345")
+            if not quiet:
+                self.stdout.write("Admin yaratildi: admin / admin12345")
 
-        self.stdout.write(self.style.SUCCESS(
-            f"Tayyor: {Brand.objects.count()} brend, {Perfume.objects.count()} atir, "
-            f"{Note.objects.count()} nota, {Review.objects.count()} sharh."))
+        if not quiet:
+            self.stdout.write(self.style.SUCCESS(
+                f"Tayyor: {Brand.objects.count()} brend, {Perfume.objects.count()} atir, "
+                f"{Note.objects.count()} nota, {Review.objects.count()} sharh."))

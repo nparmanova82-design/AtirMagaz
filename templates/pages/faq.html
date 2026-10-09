@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Savol-javoblar — AtirMagaz{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs" aria-label="Yo'l"><a href="{% url 'shop:home' %}">Bosh sahifa</a><span aria-hidden="true">/</span><span>Savol-javoblar</span></nav>
+    <h1>Ko'p beriladigan savollar</h1>
+    <p>Originallik, yetkazib berish, to'lov va qaytarish haqida qisqa va aniq javoblar.</p>
+  </div>
+</section>
+
+<div class="container content-split">
+  <div class="accordion">
+    {% for question, answers in faq %}
+      <details {% if forloop.first %}open{% endif %}>
+        <summary>{{ question }} <svg class="ic"><use href="#i-plus"/></svg></summary>
+        <div class="accordion__body">{% for a in answers %}<p>{{ a }}</p>{% endfor %}</div>
+      </details>
+    {% endfor %}
+  </div>
+  <aside class="aside-card">
+    <h3>Javob topmadingizmi?</h3>
+    <p>Maslahatchimizga yozing yoki qo'ng'iroq qiling — atir tanlashda ham bepul yordam beramiz.</p>
+    <a class="btn btn--dark btn--block" href="{% url 'pages:contacts' %}">Savol berish</a>
+    <a class="btn btn--outline btn--block" style="margin-top:10px" href="{{ site.telegram }}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-telegram"/></svg> Telegram</a>
+  </aside>
+</div>
+{% endblock %}

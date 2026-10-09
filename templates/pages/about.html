@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load shop_tags %}
+
+{% block title %}Biz haqimizda — AtirMagaz{% endblock %}
+{% block description %}AtirMagaz — 2018-yildan beri O'zbekistonda original parfyumeriya butiklari. Bizning hikoyamiz, qadriyatlarimiz va do'konlarimiz.{% endblock %}
+
+{% block content %}
+<section class="about-hero">
+  <div class="container">
+    <div>
+      <nav class="crumbs" aria-label="Yo'l"><a href="{% url 'shop:home' %}">Bosh sahifa</a><span aria-hidden="true">/</span><span>Biz haqimizda</span></nav>
+      <h1 class="display">Hid — bu<br><em>eng kuchli xotira</em></h1>
+      <p>AtirMagaz — kichik bir butik sifatida boshlangan, bugun esa O'zbekistonning turli shaharlaridagi minglab insonlarga «o'z hidini» topishga yordam beradigan parfyumeriya uyi.</p>
+    </div>
+    <div class="about-hero__art" aria-hidden="true">
+      {% bottle hero_bottles.0 %}{% bottle hero_bottles.1 %}{% bottle hero_bottles.2 %}
+    </div>
+  </div>
+</section>
+
+<div class="numbers">
+  <div><b>2018</b><span>yildan beri ishlaymiz</span></div>
+  <div><b>12 000+</b><span>mamnun mijozlar</span></div>
+  <div><b>{{ perfume_count }}+</b><span>atir vitrinada</span></div>
+  <div><b>{{ brand_count }}</b><span>jahon brendi</span></div>
+</div>
+
+<section class="section">
+  <div class="container story">
+    <div class="story__media reveal">
+      {% bottle hero_bottles.0 %}
+      <p class="story__quote">«Biz atir sotmaymiz — biz odamlarga o'zlarini topishga yordam beramiz.»<span>Malika Rahimova, AtirMagaz asoschisi</span></p>
+    </div>
+    <div class="reveal">
+      <span class="eyebrow">Bizning hikoya</span>
+      <h2>Bir flakon bilan boshlangan sevgi</h2>
+      <p>2018-yilda Toshkentning Amir Temur ko'chasida 20 kvadrat metrli kichik butik ochdik. O'shanda bizda bor-yo'g'i 40 ta atir va bitta katta orzu bor edi: O'zbekistonda har kim qalbaki mahsulotdan qo'rqmasdan, haqiqiy, original parfyumeriyani xarid qila olishi kerak.</p>
+      <p>Bugun AtirMagaz — uchta butik, onlayn do'kon va jahonning eng mashhur parfyumeriya uylari bilan to'g'ridan-to'g'ri hamkorlik. Lekin biz hamon o'sha kichik butikdagidek ishlaymiz: har bir mijozni tinglaymiz, hidni terida sinab ko'rishni taklif qilamiz va shoshilmasdan tanlashga yordam beramiz.</p>
+      <p>Bizning maslahatchilarimiz parfyumeriya bo'yicha maxsus o'qitilgan — ular sizga «oddiy» atir emas, aynan sizning xarakteringiz, kayfiyatingiz va hayot tarzingizga mos hidni topishda yordam beradi.</p>
+      <p class="signature">AtirMagaz jamoasi</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section--sand">
+  <div class="container">
+    <div class="section-head section-head--center reveal">
+      <span class="eyebrow">Qadriyatlarimiz</span>
+      <h2>Nimaga ishonamiz</h2>
+    </div>
+    <div class="values">
+      <div class="value reveal"><svg class="ic"><use href="#i-shield"/></svg><h3>Faqat original</h3><p>Har bir atir rasmiy distribyutorlardan, sertifikat va bojxona hujjatlari bilan keladi. Qalbaki mahsulot uchun — pulingizni ikki barobar qaytaramiz.</p></div>
+      <div class="value reveal"><svg class="ic"><use href="#i-chat"/></svg><h3>Halol maslahat</h3><p>Eng qimmatini emas, sizga mosini tavsiya qilamiz. Shubha bo'lsa — avval probnik oling, keyin qaror qiling.</p></div>
+      <div class="value reveal"><svg class="ic"><use href="#i-truck"/></svg><h3>Tezkorlik</h3><p>Toshkent bo'ylab 1 kunda, viloyatlarga 2–4 kunda. Har bir buyurtma ehtiyotkorlik bilan, sinmaydigan qadoqda yuboriladi.</p></div>
+      <div class="value reveal"><svg class="ic"><use href="#i-heart"/></svg><h3>G'amxo'rlik</h3><p>Sovg'a qadog'i, qo'lda yozilgan otkritka, har buyurtmaga probniklar — kichik narsalar katta taassurot qoldiradi.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal"><div><span class="eyebrow">Yo'limiz</span><h2>Yillar davomida</h2></div></div>
+    <div class="timeline">
+      <div class="tl reveal"><b>2018</b><h3>Birinchi butik</h3><p>Toshkentda 40 ta atir bilan kichik butik ochildi.</p></div>
+      <div class="tl reveal"><b>2020</b><h3>Onlayn do'kon</h3><p>Butun O'zbekiston bo'ylab yetkazib berishni boshladik.</p></div>
+      <div class="tl reveal"><b>2022</b><h3>Nish kolleksiya</h3><p>Creed, Kilian, MFK va boshqa nish uylar bilan hamkorlik.</p></div>
+      <div class="tl reveal"><b>2024</b><h3>Samarqand</h3><p>Uchinchi butik — Registon yaqinida ochildi.</p></div>
+      <div class="tl reveal"><b>2026</b><h3>Yangi AtirMagaz</h3><p>Yangi sayt, atir tanlash testi va probniklar xizmati.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--sand">
+  <div class="container">
+    <div class="section-head section-head--center reveal">
+      <span class="eyebrow">Jamoa</span>
+      <h2>Sizga yordam beradigan insonlar</h2>
+      <p>Har bir maslahatchimiz parfyumeriya bo'yicha 200 dan ortiq hidni yoddan biladi.</p>
+    </div>
+    <div class="team">
+      <div class="member reveal"><div class="member__photo">M</div><h3>Malika Rahimova</h3><p>Asoschi va bosh parfyumeriya maslahatchisi</p></div>
+      <div class="member reveal"><div class="member__photo">S</div><h3>Sardor Karimov</h3><p>Brendlar bilan hamkorlik bo'yicha direktor</p></div>
+      <div class="member reveal"><div class="member__photo">D</div><h3>Dilnoza Yusupova</h3><p>Nish parfyumeriya bo'yicha mutaxassis</p></div>
+      <div class="member reveal"><div class="member__photo">J</div><h3>Jasur Aliyev</h3><p>Mijozlar xizmati va yetkazib berish</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="dokonlar">
+  <div class="container">
+    <div class="section-head reveal">
+      <div><span class="eyebrow">Butiklarimiz</span><h2>Bizga tashrif buyuring</h2><p>Butikda istalgan atirni terida sinab ko'rish va maslahatchi bilan bepul suhbatlashish mumkin.</p></div>
+      <a class="link-arrow" href="{% url 'pages:contacts' %}">Aloqa sahifasi <svg class="ic"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="stores">
+      {% for s in stores %}
+        <div class="store reveal">
+          <h3>{{ s.name }}</h3>
+          <p><svg class="ic"><use href="#i-pin"/></svg><span>{{ s.address }}<br><small>{{ s.landmark }}</small></span></p>
+          <p><svg class="ic"><use href="#i-clock"/></svg>{{ s.hours }}</p>
+          <p><svg class="ic"><use href="#i-phone"/></svg><a href="tel:{{ s.phone|cut:' ' }}">{{ s.phone }}</a></p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="quiz-cta reveal">
+      <span class="quiz-cta__icon"><svg class="ic"><use href="#i-sparkle"/></svg></span>
+      <div><span class="eyebrow">Boshlaymizmi?</span><h2 class="display">O'z hidingizni topishga tayyormisiz?</h2><p>Katalogni ko'zdan kechiring yoki 1 daqiqalik testdan o'ting.</p></div>
+      <a class="btn btn--dark" href="{% url 'shop:catalog' %}">Katalogga o'tish <svg class="ic"><use href="#i-arrow"/></svg></a>
+    </div>
+  </div>
+</section>
+{% endblock %}

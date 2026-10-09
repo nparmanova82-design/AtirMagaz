@@ -6,6 +6,7 @@ from django.views.decorators.http import require_POST
 
 from orders.forms import PhoneField
 from shop.models import Brand, Perfume
+from shop.views import FAMILY_INFO
 
 from .models import ContactMessage, Subscriber
 
@@ -82,7 +83,13 @@ FAQ = [
 
 
 def about(request):
+    bottles, shapes = [], set()
+    for p in Perfume.objects.active().select_related("brand").filter(brand__is_niche=True).order_by("-sold_count"):
+        if p.shape not in shapes:
+            bottles.append(p)
+            shapes.add(p.shape)
     return render(request, "pages/about.html", {
+        "hero_bottles": bottles[:3],
         "stores": STORES,
         "perfume_count": Perfume.objects.active().count(),
         "brand_count": Brand.objects.count(),
@@ -90,7 +97,9 @@ def about(request):
 
 
 def contacts(request):
-    form = ContactForm(request.POST or None)
+    topic = request.GET.get("mavzu")
+    form = ContactForm(request.POST or None,
+                       initial={"topic": topic if topic in ContactMessage.Topic.values else None})
     if request.method == "POST" and form.is_valid():
         form.save()
         messages.success(request, "Xabaringiz yuborildi! Operatorimiz tez orada bog'lanadi.")
@@ -111,10 +120,13 @@ def returns(request):
 
 
 def guide(request):
-    families = (Perfume.objects.active().values("family").annotate(n=Count("id")))
-    return render(request, "pages/guide.html", {
-        "family_counts": {f["family"]: f["n"] for f in families},
-    })
+    counts = {f["family"]: f["n"] for f in Perfume.objects.active().values("family").annotate(n=Count("id"))}
+    families = [
+        {"key": key, "label": label, "text": FAMILY_INFO[key][0], "color": FAMILY_INFO[key][1],
+         "count": counts.get(key, 0)}
+        for key, label in Perfume.Family.choices
+    ]
+    return render(request, "pages/guide.html", {"families": families})
 
 
 @require_POST

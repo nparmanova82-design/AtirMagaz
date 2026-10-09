@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Qaytarish va almashtirish — AtirMagaz{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs" aria-label="Yo'l"><a href="{% url 'shop:home' %}">Bosh sahifa</a><span aria-hidden="true">/</span><span>Qaytarish va almashtirish</span></nav>
+    <h1>Qaytarish va almashtirish</h1>
+    <p>Xaridingizdan mamnun bo'lishingiz biz uchun muhim. Quyida — qaytarish qoidalari.</p>
+  </div>
+</section>
+
+<div class="container content-split">
+  <div class="prose">
+    <h2>14 kun ichida qaytarish</h2>
+    <p>O'zbekiston Respublikasining «Iste'molchilar huquqlarini himoya qilish to'g'risida»gi qonuniga muvofiq, sifatli mahsulotni xarid qilingan kundan boshlab <strong>14 kun ichida</strong> qaytarish yoki almashtirish mumkin, agar:</p>
+    <ul>
+      <li>atir qutisi ochilmagan va plyonkasi buzilmagan bo'lsa;</li>
+      <li>mahsulot tovar ko'rinishini saqlagan bo'lsa;</li>
+      <li>xarid cheki yoki buyurtma raqami saqlangan bo'lsa.</li>
+    </ul>
+    <p>Ochilgan atirlar sanitariya-gigiyena talablariga ko'ra qaytarib olinmaydi. Shuning uchun katta flakondan oldin <strong>5 ml probnik</strong> olishni tavsiya qilamiz.</p>
+
+    <h2>Nuqsonli mahsulot</h2>
+    <p>Agar mahsulot shikastlangan holda yetib kelsa yoki atomayzer ishlamasa — darhol, kuryer oldida bizga xabar bering. Biz mahsulotni bepul almashtiramiz yoki pulingizni to'liq qaytaramiz.</p>
+
+    <h2>Originallik kafolati</h2>
+    <p>Barcha atirlarimiz rasmiy distribyutorlardan olinadi. Agar mustaqil ekspertiza mahsulotimiz original emasligini tasdiqlasa, <strong>pulingizni ikki barobar miqdorida</strong> qaytaramiz.</p>
+
+    <h2>Qanday qaytarish mumkin?</h2>
+    <ol>
+      <li>{{ site.phone }} raqamiga qo'ng'iroq qiling yoki Aloqa sahifasidan yozing.</li>
+      <li>Buyurtma raqamingiz va qaytarish sababini ayting.</li>
+      <li>Mahsulotni istalgan butikimizga olib keling yoki kuryerni chaqiring.</li>
+      <li>Pul 3 ish kuni ichida to'lov usulingizga qaytariladi.</li>
+    </ol>
+  </div>
+  <aside class="aside-card">
+    <h3>Qaytarish uchun ariza</h3>
+    <p>Formani to'ldiring — mutaxassisimiz siz bilan bog'lanadi.</p>
+    <a class="btn btn--dark btn--block" href="{% url 'pages:contacts' %}?mavzu=order">Ariza qoldirish</a>
+  </aside>
+</div>
+{% endblock %}

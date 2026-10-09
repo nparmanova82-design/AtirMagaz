@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Ro'yxatdan o'tish — AtirMagaz{% endblock %}
+
+{% block content %}
+<div class="container auth">
+  <div class="auth__card">
+    <span class="eyebrow">Yangi hisob</span>
+    <h1 style="margin-top:10px">Ro'yxatdan o'tish</h1>
+    <p>Buyurtmalar tarixi, tezkor rasmiylashtirish va yopiq aksiyalar — faqat a'zolar uchun.</p>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="field {% if field.errors %}field--error{% endif %}">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}
+        </div>
+      {% endfor %}
+      <button class="btn btn--dark btn--block" type="submit">Hisob yaratish</button>
+    </form>
+    <p class="auth__alt">Hisobingiz bormi? <a href="{% url 'accounts:login' %}">Kirish</a></p>
+  </div>
+</div>
+{% endblock %}

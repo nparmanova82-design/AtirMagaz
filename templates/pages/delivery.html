@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load shop_tags %}
+
+{% block title %}Yetkazib berish va to'lov — AtirMagaz{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs" aria-label="Yo'l"><a href="{% url 'shop:home' %}">Bosh sahifa</a><span aria-hidden="true">/</span><span>Yetkazib berish va to'lov</span></nav>
+    <h1>Yetkazib berish va to'lov</h1>
+    <p>Butun O'zbekiston bo'ylab yetkazamiz. {{ site.free_delivery_from|som }}dan yuqori buyurtmalar — bepul.</p>
+  </div>
+</section>
+
+<div class="container content-split">
+  <div class="prose">
+    <div class="info-cards">
+      <div class="info-card"><svg class="ic"><use href="#i-truck"/></svg><b>Toshkent</b><span>Kuryer orqali, 1 kun ichida</span><strong>{{ site.delivery_tashkent|som }}</strong></div>
+      <div class="info-card"><svg class="ic"><use href="#i-mail"/></svg><b>Viloyatlar</b><span>BTS / Uzpost, 2–4 ish kuni</span><strong>{{ site.delivery_regions|som }}</strong></div>
+      <div class="info-card"><svg class="ic"><use href="#i-store"/></svg><b>Olib ketish</b><span>Butikdan, buyurtma kuni</span><strong>Bepul</strong></div>
+    </div>
+
+    <h2>Yetkazib berish shartlari</h2>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Usul</th><th>Muddat</th><th>Narx</th></tr></thead>
+        <tbody>
+          <tr><td>Kuryer — Toshkent shahri</td><td>14:00 gacha — shu kuni, keyin — ertasiga</td><td>{{ site.delivery_tashkent|som }}</td></tr>
+          <tr><td>Kuryer — Toshkent viloyati</td><td>1–2 kun</td><td>{{ site.delivery_regions|som }}</td></tr>
+          <tr><td>Pochta — viloyatlar</td><td>2–4 ish kuni</td><td>{{ site.delivery_regions|som }}</td></tr>
+          <tr><td>Butikdan olib ketish</td><td>Buyurtma kuni, 2 soatdan so'ng</td><td>Bepul</td></tr>
+          <tr><td>{{ site.free_delivery_from|som }}dan yuqori buyurtma</td><td>Har qanday usul</td><td><b>Bepul</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul>
+      <li>Buyurtma rasmiylashtirilgach, operatorimiz 15 daqiqa ichida qo'ng'iroq qilib tasdiqlaydi.</li>
+      <li>Kuryer yetib borishidan 1 soat oldin qo'ng'iroq qiladi.</li>
+      <li>Mahsulotni kuryer oldida ochib, butunligini tekshirishingiz mumkin.</li>
+      <li>Har bir atir zarbaga chidamli qadoqda, plyonkasi buzilmagan holda yetkaziladi.</li>
+    </ul>
+
+    <h2>To'lov usullari</h2>
+    <p>Sizga qulay usulni tanlang — barcha to'lovlar xavfsiz va chek bilan rasmiylashtiriladi.</p>
+    <div class="info-cards">
+      <div class="info-card"><svg class="ic"><use href="#i-tag"/></svg><b>Naqd pul</b><span>Kuryerga yoki butikda, mahsulotni qabul qilganda</span></div>
+      <div class="info-card"><svg class="ic"><use href="#i-card"/></svg><b>Karta</b><span>Uzcard, Humo, Visa — kuryer terminali orqali</span></div>
+      <div class="info-card"><svg class="ic"><use href="#i-phone"/></svg><b>Onlayn</b><span>Click, Payme yoki Uzum Bank orqali — havola yuboramiz</span></div>
+    </div>
+
+    <h2>Sovg'a qadog'i</h2>
+    <p>Atirni sovg'a qilmoqchimisiz? Rasmiylashtirishda «Sovg'a qadog'i» ni belgilang ({{ site.gift_wrap_price|som }}). Biz atirni brendli qutiga joylab, atlas lenta bog'laymiz va otkritkaga tilagingizni qo'lda yozamiz. Chek qutiga solinmaydi — narxni faqat siz bilasiz.</p>
+  </div>
+
+  <aside class="aside-card">
+    <h3>Savolingiz bormi?</h3>
+    <p>Operatorlarimiz har kuni 10:00 dan 22:00 gacha ishlaydi.</p>
+    <a class="btn btn--dark btn--block" href="tel:{{ site.phone_raw }}"><svg class="ic"><use href="#i-phone"/></svg> {{ site.phone }}</a>
+    <a class="btn btn--outline btn--block" style="margin-top:10px" href="{% url 'orders:track' %}">Buyurtma holatini bilish</a>
+  </aside>
+</div>
+{% endblock %}
