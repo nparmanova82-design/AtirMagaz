@@ -1,0 +1,238 @@
+{% load static shop_tags %}<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}AtirMagaz — original atirlar do'koni{% endblock %}</title>
+  <meta name="description" content="{% block description %}AtirMagaz — 100% original atirlar: Chanel, Dior, Tom Ford, Creed va boshqa brendlar. Toshkent bo'ylab 1 kunda yetkazib berish, probniklar, sovg'a qadog'i.{% endblock %}">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='11' y='3' width='10' height='7' rx='1.5' fill='%23B08D57'/%3E%3Crect x='6' y='10' width='20' height='19' rx='4' fill='%231B1714'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <script>document.documentElement.classList.add("js")</script>
+  {% block head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+{% include "includes/icons.html" %}
+
+<div class="topbar">
+  <div class="container topbar__inner">
+    <p class="topbar__promo"><svg class="ic"><use href="#i-truck"/></svg> {{ site.free_delivery_from|som }}dan yuqori buyurtmalarga <b>bepul yetkazib berish</b></p>
+    <p class="topbar__promo hide-md"><svg class="ic"><use href="#i-shield"/></svg> 100% original — sertifikatlangan</p>
+    <p class="topbar__promo hide-md"><svg class="ic"><use href="#i-gift"/></svg> Har buyurtmaga 2 ta probnik sovg'a</p>
+    <a class="topbar__phone" href="tel:{{ site.phone_raw }}"><svg class="ic"><use href="#i-phone"/></svg> {{ site.phone }}</a>
+  </div>
+</div>
+
+<header class="header" id="header">
+  <div class="container header__inner">
+    <button class="icon-btn header__burger" type="button" data-drawer-open="menu" aria-label="Menyu">
+      <svg class="ic ic--lg"><use href="#i-menu"/></svg>
+    </button>
+
+    <a class="logo" href="{% url 'shop:home' %}" aria-label="AtirMagaz — bosh sahifa">
+      <svg class="logo__mark" viewBox="0 0 32 40" aria-hidden="true">
+        <rect x="11" y="2" width="10" height="8" rx="1.5" fill="currentColor" opacity=".55"/>
+        <rect x="13.5" y="10" width="5" height="3" fill="currentColor" opacity=".55"/>
+        <rect x="4" y="13" width="24" height="25" rx="5" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M9 25c3-2 4.5 2 7 0s4-2 7 0" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".8"/>
+      </svg>
+      <span class="logo__text">Atir<em>Magaz</em></span>
+    </a>
+
+    <nav class="nav" aria-label="Asosiy menyu">
+      <div class="nav__item nav__item--mega">
+        <a class="nav__link" href="{% url 'shop:catalog' %}">Katalog <svg class="ic ic--sm"><use href="#i-chev-down"/></svg></a>
+        <div class="mega">
+          <div class="container mega__inner">
+            <div class="mega__col">
+              <p class="mega__title">Kim uchun</p>
+              <a href="{% url 'shop:catalog' %}?gender=women">Ayollar atirlari</a>
+              <a href="{% url 'shop:catalog' %}?gender=men">Erkaklar atirlari</a>
+              <a href="{% url 'shop:catalog' %}?gender=unisex">Uniseks atirlar</a>
+              <a href="{% url 'shop:catalog' %}?niche=1">Nish parfyumeriya</a>
+            </div>
+            <div class="mega__col">
+              <p class="mega__title">Hid oilasi</p>
+              {% for key, label in nav_families %}<a href="{% url 'shop:catalog' %}?family={{ key }}">{{ label }}</a>{% endfor %}
+            </div>
+            <div class="mega__col">
+              <p class="mega__title">Tanlov</p>
+              <a href="{% url 'shop:catalog' %}?sort=popular">Xitlar</a>
+              <a href="{% url 'shop:catalog' %}?new=1">Yangi kelganlar</a>
+              <a href="{% url 'shop:catalog' %}?sale=1">Chegirmalar</a>
+              <a href="{% url 'shop:catalog' %}?max=1000000">1 mln so'mgacha</a>
+            </div>
+            <a class="mega__promo" href="{% url 'shop:quiz' %}">
+              <span class="eyebrow">Bilmayapsizmi?</span>
+              <span class="mega__promo-title">Atir tanlash testi</span>
+              <span>4 ta savol — va sizga mos hidlar tayyor</span>
+              <span class="link-arrow">Testni boshlash <svg class="ic"><use href="#i-arrow"/></svg></span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <a class="nav__link" href="{% url 'shop:catalog' %}?gender=women">Ayollar</a>
+      <a class="nav__link" href="{% url 'shop:catalog' %}?gender=men">Erkaklar</a>
+      <a class="nav__link" href="{% url 'shop:brands' %}">Brendlar</a>
+      <a class="nav__link nav__link--sale" href="{% url 'shop:catalog' %}?sale=1">Aksiyalar</a>
+      <a class="nav__link" href="{% url 'pages:about' %}">Biz haqimizda</a>
+      <a class="nav__link" href="{% url 'pages:contacts' %}">Aloqa</a>
+    </nav>
+
+    <div class="header__actions">
+      <button class="icon-btn" type="button" data-search-toggle aria-label="Qidiruv">
+        <svg class="ic ic--lg"><use href="#i-search"/></svg>
+      </button>
+      <a class="icon-btn hide-sm" href="{% if user.is_authenticated %}{% url 'accounts:profile' %}{% else %}{% url 'accounts:login' %}{% endif %}" aria-label="Hisobim">
+        <svg class="ic ic--lg"><use href="#i-user"/></svg>
+      </a>
+      <a class="icon-btn" href="{% url 'shop:wishlist' %}" aria-label="Sevimlilar">
+        <svg class="ic ic--lg"><use href="#i-heart"/></svg>
+        <span class="count" data-wishlist-count {% if not wishlist_count %}hidden{% endif %}>{{ wishlist_count }}</span>
+      </a>
+      <a class="icon-btn" href="{% url 'orders:cart' %}" aria-label="Savatcha">
+        <svg class="ic ic--lg"><use href="#i-bag"/></svg>
+        <span class="count count--dark" data-cart-count {% if not cart_count %}hidden{% endif %}>{{ cart_count }}</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="search-panel" id="search-panel" hidden>
+    <div class="container">
+      <form class="search-form" action="{% url 'shop:catalog' %}" method="get" role="search">
+        <svg class="ic ic--lg"><use href="#i-search"/></svg>
+        <input type="search" name="q" placeholder="Atir, brend yoki nota: masalan, vanil" autocomplete="off"
+               data-suggest-url="{% url 'shop:search_suggest' %}" aria-label="Qidiruv">
+        <button class="btn btn--dark btn--sm" type="submit">Qidirish</button>
+      </form>
+      <div class="suggest" data-suggest-box></div>
+      <div class="search-hints">
+        <span>Ko'p qidiriladi:</span>
+        <a href="{% url 'shop:catalog' %}?q=Baccarat">Baccarat Rouge</a>
+        <a href="{% url 'shop:catalog' %}?q=Sauvage">Sauvage</a>
+        <a href="{% url 'shop:catalog' %}?q=Vanil">Vanil</a>
+        <a href="{% url 'shop:catalog' %}?q=Lattafa">Lattafa</a>
+        <a href="{% url 'shop:catalog' %}?q=Ud">Ud</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<aside class="drawer" id="drawer-menu" aria-hidden="true">
+  <div class="drawer__overlay" data-drawer-close></div>
+  <div class="drawer__panel">
+    <div class="drawer__head">
+      <span class="logo__text">Atir<em>Magaz</em></span>
+      <button class="icon-btn" type="button" data-drawer-close aria-label="Yopish"><svg class="ic ic--lg"><use href="#i-close"/></svg></button>
+    </div>
+    <nav class="drawer__nav">
+      <a href="{% url 'shop:catalog' %}">Barcha atirlar</a>
+      <a href="{% url 'shop:catalog' %}?gender=women">Ayollar uchun</a>
+      <a href="{% url 'shop:catalog' %}?gender=men">Erkaklar uchun</a>
+      <a href="{% url 'shop:catalog' %}?gender=unisex">Uniseks</a>
+      <a href="{% url 'shop:catalog' %}?niche=1">Nish parfyumeriya</a>
+      <a href="{% url 'shop:brands' %}">Brendlar</a>
+      <a class="nav__link--sale" href="{% url 'shop:catalog' %}?sale=1">Aksiyalar</a>
+      <a href="{% url 'shop:quiz' %}">Atir tanlash testi</a>
+    </nav>
+    <nav class="drawer__nav drawer__nav--muted">
+      <a href="{% url 'pages:about' %}">Biz haqimizda</a>
+      <a href="{% url 'pages:delivery' %}">Yetkazib berish va to'lov</a>
+      <a href="{% url 'pages:guide' %}">Atir qo'llanmasi</a>
+      <a href="{% url 'pages:faq' %}">Savol-javoblar</a>
+      <a href="{% url 'orders:track' %}">Buyurtma holati</a>
+      <a href="{% url 'pages:contacts' %}">Aloqa</a>
+      {% if user.is_authenticated %}<a href="{% url 'accounts:profile' %}">Shaxsiy kabinet</a>{% else %}<a href="{% url 'accounts:login' %}">Kirish / Ro'yxatdan o'tish</a>{% endif %}
+    </nav>
+    <a class="drawer__phone" href="tel:{{ site.phone_raw }}"><svg class="ic"><use href="#i-phone"/></svg> {{ site.phone }}</a>
+  </div>
+</aside>
+
+<main id="main">
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__subscribe">
+      <div>
+        <p class="eyebrow eyebrow--light">Yopiq aksiyalar</p>
+        <h2 class="footer__title">Yangiliklar va maxsus takliflardan birinchi bo'lib xabardor bo'ling</h2>
+      </div>
+      <form class="subscribe" action="{% url 'pages:subscribe' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <input type="email" name="email" placeholder="Email manzilingiz" required aria-label="Email">
+        <button class="btn btn--gold" type="submit">Obuna bo'lish</button>
+        <p class="subscribe__note">Obuna bo'lganingiz uchun — birinchi buyurtmaga <b>ATIR10</b> promokodi bilan 10% chegirma.</p>
+      </form>
+    </div>
+
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="logo logo--light" href="{% url 'shop:home' %}"><span class="logo__text">Atir<em>Magaz</em></span></a>
+        <p>2018-yildan beri O'zbekistonda original parfyumeriya. Har bir hid — bir hikoya, biz esa uni topishingizga yordam beramiz.</p>
+        <div class="socials">
+          <a href="{{ site.instagram }}" target="_blank" rel="noopener" aria-label="Instagram"><svg class="ic"><use href="#i-instagram"/></svg></a>
+          <a href="{{ site.telegram }}" target="_blank" rel="noopener" aria-label="Telegram"><svg class="ic"><use href="#i-telegram"/></svg></a>
+          <a href="tel:{{ site.phone_raw }}" aria-label="Qo'ng'iroq"><svg class="ic"><use href="#i-phone"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <p class="footer__head">Katalog</p>
+        <a href="{% url 'shop:catalog' %}?gender=women">Ayollar atirlari</a>
+        <a href="{% url 'shop:catalog' %}?gender=men">Erkaklar atirlari</a>
+        <a href="{% url 'shop:catalog' %}?gender=unisex">Uniseks</a>
+        <a href="{% url 'shop:catalog' %}?niche=1">Nish parfyumeriya</a>
+        <a href="{% url 'shop:brands' %}">Brendlar</a>
+        <a href="{% url 'shop:catalog' %}?sale=1">Aksiyalar</a>
+      </div>
+      <div>
+        <p class="footer__head">Xaridorlarga</p>
+        <a href="{% url 'pages:delivery' %}">Yetkazib berish va to'lov</a>
+        <a href="{% url 'pages:returns' %}">Qaytarish va almashtirish</a>
+        <a href="{% url 'orders:track' %}">Buyurtma holati</a>
+        <a href="{% url 'pages:faq' %}">Savol-javoblar</a>
+        <a href="{% url 'pages:guide' %}">Atir qo'llanmasi</a>
+        <a href="{% url 'shop:quiz' %}">Atir tanlash testi</a>
+      </div>
+      <div>
+        <p class="footer__head">AtirMagaz</p>
+        <a href="{% url 'pages:about' %}">Biz haqimizda</a>
+        <a href="{% url 'pages:about' %}#dokonlar">Do'konlarimiz</a>
+        <a href="{% url 'pages:contacts' %}">Aloqa</a>
+        <a href="{% url 'pages:contacts' %}?mavzu=wholesale">Hamkorlik</a>
+      </div>
+      <div class="footer__contacts">
+        <p class="footer__head">Aloqa</p>
+        <a href="tel:{{ site.phone_raw }}"><svg class="ic"><use href="#i-phone"/></svg> {{ site.phone }}</a>
+        <a href="mailto:{{ site.email }}"><svg class="ic"><use href="#i-mail"/></svg> {{ site.email }}</a>
+        <span><svg class="ic"><use href="#i-pin"/></svg> {{ site.address }}</span>
+        <span><svg class="ic"><use href="#i-clock"/></svg> {{ site.hours }}</span>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p>© {% now "Y" %} AtirMagaz. Barcha huquqlar himoyalangan.</p>
+      <div class="pay-badges" aria-label="To'lov usullari">
+        <span>Click</span><span>Payme</span><span>Uzum</span><span>Uzcard</span><span>Humo</span><span>Visa</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="toasts" id="toasts" aria-live="polite">
+  {% for message in messages %}
+    <div class="toast toast--{{ message.tags }}"><svg class="ic"><use href="#i-check"/></svg><span>{{ message }}</span></div>
+  {% endfor %}
+</div>
+
+<a class="to-top" href="#header" aria-label="Yuqoriga"><svg class="ic"><use href="#i-chev-down"/></svg></a>
+
+<form id="csrf-holder" hidden>{% csrf_token %}</form>
+<script src="{% static 'js/main.js' %}" defer></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

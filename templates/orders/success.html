@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load shop_tags %}
+
+{% block title %}Buyurtma qabul qilindi — AtirMagaz{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="thanks">
+    <div class="thanks__icon"><svg class="ic"><use href="#i-check"/></svg></div>
+    <h1>Rahmat, {{ order.full_name }}!</h1>
+    <p>Buyurtmangiz qabul qilindi. Operatorimiz <b>{{ order.phone }}</b> raqamiga 15 daqiqa ichida qo'ng'iroq qilib, tafsilotlarni tasdiqlaydi.</p>
+
+    <div class="order-box">
+      <div class="order-box__head">
+        <div><span class="muted" style="font-size:12.5px">Buyurtma raqami</span><div class="order-box__num">{{ order.number }}</div></div>
+        <span class="badge badge--ok">{{ order.get_status_display }}</span>
+      </div>
+      <div class="order-items">
+        {% for item in order.items.all %}
+          <div><span><b style="color:var(--ink)">{{ item.title }}</b> · {{ item.volume_label }} × {{ item.quantity }}</span><b>{{ item.line_total|som }}</b></div>
+        {% endfor %}
+        {% if order.discount %}<div><span>Chegirma ({{ order.promo_code }})</span><b style="color:var(--ok)">−{{ order.discount|som }}</b></div>{% endif %}
+        <div><span>Yetkazib berish</span><b>{% if order.delivery_cost %}{{ order.delivery_cost|som }}{% else %}Bepul{% endif %}</b></div>
+        {% if order.gift_wrap_cost %}<div><span>Sovg'a qadog'i</span><b>{{ order.gift_wrap_cost|som }}</b></div>{% endif %}
+        <div style="border-bottom:0"><span style="color:var(--ink); font-weight:600">Jami</span><b style="font-size:20px">{{ order.total|som }}</b></div>
+      </div>
+      <dl class="order-meta">
+        <div><dt>Yetkazib berish</dt><dd>{{ order.get_delivery_display }}</dd></div>
+        <div><dt>To'lov</dt><dd>{{ order.get_payment_display }}</dd></div>
+        <div><dt>Manzil</dt><dd>{{ order.get_region_display }}{% if order.address %}, {{ order.address }}{% endif %}</dd></div>
+        <div><dt>Sana</dt><dd>{{ order.created_at|date:"d.m.Y H:i" }}</dd></div>
+      </dl>
+    </div>
+
+    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:30px">
+      <a class="btn btn--dark" href="{% url 'shop:catalog' %}">Xaridni davom ettirish</a>
+      <a class="btn btn--outline" href="{% url 'orders:track' %}?number={{ order.number }}&phone={{ order.phone|urlencode }}">Buyurtma holatini kuzatish</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

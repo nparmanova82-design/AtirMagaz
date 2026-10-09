@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% load shop_tags %}
+
+{% block content %}
+<section class="hero">
+  <div class="container hero__inner">
+    <div>
+      <span class="eyebrow">Original parfyumeriya butigi · 2018-yildan</span>
+      <h1 class="hero__title display">Har bir hidda —<br><em>o'z hikoyangiz</em></h1>
+      <p class="hero__lead">Chanel, Dior, Tom Ford, Creed va yana {{ brands|length }} ta brenddan sertifikatlangan atirlar. Toshkent bo'ylab bir kunda yetkazamiz, har buyurtmaga ikki probnik sovg'a qilamiz.</p>
+      <div class="hero__cta">
+        <a class="btn btn--dark" href="{% url 'shop:catalog' %}">Katalogga o'tish <svg class="ic"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn--outline" href="{% url 'shop:quiz' %}"><svg class="ic"><use href="#i-sparkle"/></svg> Atirimni topish</a>
+      </div>
+      <div class="hero__stats">
+        <div><b>12 000+</b><span>mamnun mijoz</span></div>
+        <div><b>{{ brands|length }}</b><span>jahon brendi</span></div>
+        <div><b>4.9 ★</b><span>o'rtacha baho</span></div>
+      </div>
+    </div>
+    <div class="hero__art" aria-hidden="true">
+      <div class="hero__arch"></div>
+      {% for p in hero %}
+        <a class="hero__bottle hero__bottle--{{ forloop.counter }}" href="{{ p.get_absolute_url }}" tabindex="-1">{% bottle p %}</a>
+      {% endfor %}
+      <div class="hero__tag hero__tag--a"><svg class="ic"><use href="#i-shield"/></svg><div><b>100% original</b>sertifikat bilan</div></div>
+      <div class="hero__tag hero__tag--b"><svg class="ic"><use href="#i-truck"/></svg><div><b>1 kunda yetkazish</b>Toshkent bo'ylab</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="perks">
+  <div class="perk"><svg class="ic"><use href="#i-shield"/></svg><div><b>Faqat original</b><span>Rasmiy distribyutorlardan</span></div></div>
+  <div class="perk"><svg class="ic"><use href="#i-truck"/></svg><div><b>Bepul yetkazish</b><span>{{ site.free_delivery_from|som }}dan yuqori</span></div></div>
+  <div class="perk"><svg class="ic"><use href="#i-drop"/></svg><div><b>Probniklar</b><span>Avval sinab ko'ring — 5 ml</span></div></div>
+  <div class="perk"><svg class="ic"><use href="#i-gift"/></svg><div><b>Sovg'a qadog'i</b><span>Otkritka va lenta bilan</span></div></div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <div><span class="eyebrow">Kategoriyalar</span><h2>Kim uchun tanlaysiz?</h2></div>
+      <a class="link-arrow" href="{% url 'shop:catalog' %}">Barcha atirlar <svg class="ic"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="cats">
+      {% for c in categories %}
+        <a class="cat reveal" href="{{ c.url }}" style="--tint: {{ c.tint }}">
+          <div><h3 class="cat__title">{{ c.title }}</h3><p class="cat__count">{{ c.count }} ta atir</p></div>
+          <span class="cat__go"><svg class="ic"><use href="#i-arrow"/></svg></span>
+          {% if c.perfume %}{% bottle c.perfume "cat__art" %}{% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section--sand">
+  <div class="container">
+    <div class="section-head reveal">
+      <div><span class="eyebrow">Eng ko'p sotilganlar</span><h2>Xitlar</h2></div>
+      <div class="section-head__nav" data-rail="rail-best">
+        <button class="round-btn" type="button" data-prev aria-label="Oldingi"><svg class="ic"><use href="#i-chev-left"/></svg></button>
+        <button class="round-btn" type="button" data-next aria-label="Keyingi"><svg class="ic"><use href="#i-chev-right"/></svg></button>
+      </div>
+    </div>
+    <div class="rail" id="rail-best">
+      {% for p in bestsellers %}{% include "includes/product_card.html" %}{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="promo reveal">
+      <div>
+        <span class="eyebrow eyebrow--light">Kuzgi aksiya</span>
+        <h2 class="display">Kuz hidlari —<br><em>20% chegirma bilan</em></h2>
+        <p>Iliq vanil, anbar va ziravorlar mavsumi boshlandi. 1,5 mln so'mdan yuqori buyurtmalarga promokod bilan 20% chegirma.</p>
+        <div class="promo__code"><span>Promokod:</span><b>KUZ20</b><button type="button" data-copy="KUZ20">Nusxalash</button></div>
+        <div><a class="btn btn--light" href="{% url 'shop:catalog' %}?family=gourmand">Gurmand atirlarni ko'rish <svg class="ic"><use href="#i-arrow"/></svg></a></div>
+      </div>
+      <div class="promo__art" aria-hidden="true">
+        {% for p in on_sale|slice:":2" %}{% bottle p %}{% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="section-head reveal">
+      <div><span class="eyebrow">Hid oilalari</span><h2>Sizga qanday hidlar yoqadi?</h2>
+        <p>Har bir atir ma'lum bir «oila»ga mansub. Yoqtirgan oilangizni tanlang — o'xshash hidlarni tez topasiz.</p></div>
+      <a class="link-arrow" href="{% url 'pages:guide' %}">Atir qo'llanmasi <svg class="ic"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="families">
+      {% for f in families %}
+        <a class="family reveal" href="{% url 'shop:catalog' %}?family={{ f.key }}" style="--tint: {{ f.color }}">
+          <span class="family__dot"></span>
+          <span><span class="family__name">{{ f.label }}</span><span class="family__text">{{ f.text }}</span></span>
+          <span class="family__count">{{ f.count }} ta</span>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <div><span class="eyebrow">Yangi kelganlar</span><h2>Vitrinada yangilar</h2></div>
+      <a class="link-arrow" href="{% url 'shop:catalog' %}?new=1">Hammasi <svg class="ic"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="grid">
+      {% for p in new_arrivals|slice:":8" %}{% include "includes/product_card.html" %}{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="quiz-cta reveal">
+      <span class="quiz-cta__icon"><svg class="ic"><use href="#i-sparkle"/></svg></span>
+      <div>
+        <span class="eyebrow">1 daqiqalik test</span>
+        <h2 class="display">Qaysi atir sizga mos kelishini bilmayapsizmi?</h2>
+        <p>4 ta oddiy savolga javob bering — maslahatchimiz kabi sizga mos hidlarni tanlab beramiz.</p>
+      </div>
+      <a class="btn btn--dark" href="{% url 'shop:quiz' %}">Testni boshlash <svg class="ic"><use href="#i-arrow"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<div class="brand-strip" aria-label="Brendlar">
+  <div class="brand-strip__track">
+    {% for b in brands %}<a href="{{ b.get_absolute_url }}">{{ b.name }}</a>{% endfor %}
+    {% for b in brands %}<a href="{{ b.get_absolute_url }}" aria-hidden="true" tabindex="-1">{{ b.name }}</a>{% endfor %}
+  </div>
+</div>
+
+<section class="section section--sand">
+  <div class="container">
+    <div class="section-head section-head--center reveal">
+      <span class="eyebrow">Parfyumeriya alifbosi</span>
+      <h2>EDP, EDT va Parfum — farqi nimada?</h2>
+      <p>Konsentratsiya qancha yuqori bo'lsa, atir shuncha uzoq saqlanadi va chuqurroq ochiladi.</p>
+    </div>
+    <div class="guide-cards">
+      <div class="guide-card reveal"><span class="guide-card__pct">20–30%</span><h3>Parfum / Extrait</h3><p>Eng to'yingan shakl. Terida 8–12 soat, juda nafis ochiladi.</p><div class="guide-card__bar"><span style="width:100%"></span></div></div>
+      <div class="guide-card reveal"><span class="guide-card__pct">15–20%</span><h3>Eau de Parfum</h3><p>Eng ommabop tanlov: 6–8 soat, yorqin va barqaror.</p><div class="guide-card__bar"><span style="width:75%"></span></div></div>
+      <div class="guide-card reveal"><span class="guide-card__pct">8–15%</span><h3>Eau de Toilette</h3><p>Yengilroq va tetikroq. Kundalik va yozgi kunlar uchun — 3–5 soat.</p><div class="guide-card__bar"><span style="width:50%"></span></div></div>
+      <div class="guide-card reveal"><span class="guide-card__pct">2–5%</span><h3>Eau de Cologne</h3><p>Eng yengil, tetiklantiruvchi. Qatlamlab sepish uchun ideal.</p><div class="guide-card__bar"><span style="width:25%"></span></div></div>
+    </div>
+  </div>
+</section>
+
+{% if on_sale %}
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <div><span class="eyebrow">Chegirmalar</span><h2>Foydali takliflar</h2></div>
+      <a class="link-arrow" href="{% url 'shop:catalog' %}?sale=1">Barcha aksiyalar <svg class="ic"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="grid">
+      {% for p in on_sale %}{% include "includes/product_card.html" %}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if testimonials %}
+<section class="section section--sand">
+  <div class="container">
+    <div class="section-head section-head--center reveal">
+      <span class="eyebrow">Mijozlarimiz fikri</span>
+      <h2>Ular bizni tanladi</h2>
+    </div>
+    <div class="reviews">
+      {% for r in testimonials|slice:":3" %}
+        <figure class="review-card reveal" style="margin:0">
+          {% stars r.rating %}
+          <blockquote class="review-card__text" style="margin:0">«{{ r.text }}»</blockquote>
+          <figcaption class="review-card__foot">
+            <span class="avatar">{{ r.name|first }}</span>
+            <span><b>{{ r.name }}</b><br><a href="{{ r.perfume.get_absolute_url }}">{{ r.perfume }}</a></span>
+          </figcaption>
+        </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

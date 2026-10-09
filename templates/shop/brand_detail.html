@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}{{ brand.name }} atirlari — AtirMagaz{% endblock %}
+{% block description %}{{ brand.name }} original atirlari AtirMagaz do'konida. {{ brand.description|truncatechars:120 }}{% endblock %}
+
+{% block content %}
+<section class="brand-hero">
+  <div class="container">
+    <nav class="crumbs" aria-label="Yo'l"><a href="{% url 'shop:home' %}">Bosh sahifa</a><span aria-hidden="true">/</span><a href="{% url 'shop:brands' %}">Brendlar</a><span aria-hidden="true">/</span><span>{{ brand.name }}</span></nav>
+    <div class="brand-hero__inner">
+      <div>
+        {% if brand.is_niche %}<span class="badge badge--soft" style="margin-top:18px">Nish parfyumeriya</span>{% endif %}
+        <h1>{{ brand.name }}</h1>
+        <p>{{ brand.description }}</p>
+      </div>
+      <div class="brand-facts">
+        {% if brand.founded %}<div><b>{{ brand.founded }}</b><span>tashkil topgan</span></div>{% endif %}
+        <div><b>{{ perfumes|length }}</b><span>ta atir</span></div>
+        {% if brand.country %}<div><b style="font-size:26px; line-height:36px">{{ brand.country }}</b><span>vatani</span></div>{% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="toolbar">
+      <p class="toolbar__count"><b>{{ perfumes|length }}</b> ta atir</p>
+      <form method="get">
+        <label class="sr-only" for="sort">Saralash</label>
+        <select class="select" id="sort" name="sort" data-autosubmit>
+          {% for key, label in sorts %}<option value="{{ key }}" {% if key == sort %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+      </form>
+    </div>
+    {% if perfumes %}
+      <div class="grid">{% for p in perfumes %}{% include "includes/product_card.html" %}{% endfor %}</div>
+    {% else %}
+      <div class="empty"><svg class="ic"><use href="#i-drop"/></svg><h2>Tez orada</h2><p>Bu brend atirlari yaqin kunlarda vitrinaga chiqadi.</p><a class="btn btn--dark" href="{% url 'shop:catalog' %}">Katalogga o'tish</a></div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

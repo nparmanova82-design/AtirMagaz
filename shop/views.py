@@ -44,6 +44,9 @@ def home(request):
     base = Perfume.objects.active().with_stats().prefetch_related("variants")
     bestsellers = list(base.filter(is_bestseller=True).order_by("-sold_count")[:8])
     new_arrivals = list(base.filter(is_new=True).order_by("-created_at")[:8])
+    if len(new_arrivals) < 8:  # vitrina qatori to'liq bo'lishi uchun eng so'nggi chiqqanlar bilan to'ldiramiz
+        new_arrivals += list(base.exclude(pk__in=[p.pk for p in new_arrivals])
+                             .order_by(F("year").desc(nulls_last=True))[:8 - len(new_arrivals)])
     on_sale = list(base.filter(old_price_from__isnull=False).order_by("-sold_count")[:4])
 
     # Bosh banner uchun turli shakldagi uchta flakon
@@ -64,6 +67,22 @@ def home(request):
     ]
     gender_counts = dict(
         Perfume.objects.active().values_list("gender").annotate(n=Count("id")).values_list("gender", "n"))
+    popular = Perfume.objects.active().select_related("brand").order_by("-sold_count")
+    catalog_url = reverse("shop:catalog")
+    categories = [
+        {"title": "Ayollar uchun", "url": f"{catalog_url}?gender=women", "count": gender_counts.get("women", 0),
+         "tint": "#E8A9B8",
+         "perfume": popular.filter(gender="women").first()},
+        {"title": "Erkaklar uchun", "url": f"{catalog_url}?gender=men", "count": gender_counts.get("men", 0),
+         "tint": "#8FB3CF",
+         "perfume": popular.filter(gender="men").first()},
+        {"title": "Uniseks", "url": f"{catalog_url}?gender=unisex", "count": gender_counts.get("unisex", 0),
+         "tint": "#E3B98A",
+         "perfume": popular.filter(gender="unisex").first()},
+        {"title": "Nish parfyumeriya", "url": f"{catalog_url}?niche=1", "tint": "#C9AE84",
+         "count": Perfume.objects.active().filter(brand__is_niche=True).count(),
+         "perfume": popular.filter(brand__is_niche=True).exclude(gender="unisex").first()},
+    ]
 
     testimonials = (Review.objects.filter(is_approved=True, rating=5, perfume__is_active=True)
                     .select_related("perfume__brand").order_by("-created_at")[:6])
@@ -74,8 +93,7 @@ def home(request):
         "new_arrivals": new_arrivals,
         "on_sale": on_sale,
         "families": families,
-        "gender_counts": gender_counts,
-        "niche_count": Perfume.objects.active().filter(brand__is_niche=True).count(),
+        "categories": categories,
         "brands": Brand.objects.annotate(n=Count("perfumes")).filter(n__gt=0),
         "testimonials": testimonials,
     })
@@ -179,6 +197,7 @@ def catalog(request):
     active = Perfume.objects.active()
     return render(request, "shop/catalog.html", {
         "page": page,
+        "page_range": page.paginator.get_elided_page_range(page.number, on_each_side=1, on_ends=1),
         "total": page.paginator.count,
         "chips": chips,
         "title": _page_title(request),

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load shop_tags %}
+
+{% block title %}Savatcha — AtirMagaz{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs" aria-label="Yo'l"><a href="{% url 'shop:home' %}">Bosh sahifa</a><span aria-hidden="true">/</span><span>Savatcha</span></nav>
+    <h1>Savatcha</h1>
+  </div>
+</section>
+
+<div class="container">
+{% if lines %}
+  <div class="cart">
+    <div>
+      <div class="cart-lines">
+        {% for line in lines %}
+          {% with p=line.perfume v=line.variant %}
+          <div class="cline">
+            <a class="cline__media" href="{{ p.get_absolute_url }}" style="--tint: {{ p.color }}" tabindex="-1">{% bottle p %}</a>
+            <div>
+              <a class="cline__brand" href="{{ p.brand.get_absolute_url }}">{{ p.brand.name }}</a>
+              <h2 class="cline__name"><a href="{{ p.get_absolute_url }}">{{ p.name }}</a></h2>
+              <p class="cline__meta">{{ p.get_concentration_display }} · {{ v.label }} · {{ v.price|som }}</p>
+              {% if line.over_stock %}<p class="cline__warn">Omborda faqat {{ v.stock }} dona qoldi</p>{% endif %}
+              <div class="cline__controls">
+                <form action="{% url 'orders:cart_update' %}" method="post">
+                  {% csrf_token %}<input type="hidden" name="variant" value="{{ v.pk }}">
+                  <div class="qty qty--sm" data-qty="submit">
+                    <button type="button" data-minus aria-label="Kamaytirish"><svg class="ic"><use href="#i-minus"/></svg></button>
+                    <input type="number" name="quantity" value="{{ line.quantity }}" min="1" max="{{ v.stock }}" aria-label="Soni">
+                    <button type="button" data-plus aria-label="Ko'paytirish"><svg class="ic"><use href="#i-plus"/></svg></button>
+                  </div>
+                </form>
+                <form action="{% url 'orders:cart_remove' %}" method="post">
+                  {% csrf_token %}<input type="hidden" name="variant" value="{{ v.pk }}">
+                  <button class="cline__remove" type="submit"><svg class="ic"><use href="#i-trash"/></svg> O'chirish</button>
+                </form>
+              </div>
+            </div>
+            <div class="cline__total">{{ line.total|som }}{% if line.quantity > 1 %}<small>{{ line.quantity }} × {{ v.price|som }}</small>{% endif %}</div>
+          </div>
+          {% endwith %}
+        {% endfor %}
+      </div>
+      <div style="display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-top:24px">
+        <a class="link-arrow" href="{% url 'shop:catalog' %}"><svg class="ic" style="transform:rotate(180deg)"><use href="#i-arrow"/></svg> Xaridni davom ettirish</a>
+        <span class="muted" style="font-size:13.5px"><svg class="ic" style="display:inline; vertical-align:-3px; color:var(--gold-ink)"><use href="#i-gift"/></svg> Buyurtmangizga 2 ta probnikni sovg'a sifatida qo'shamiz</span>
+      </div>
+    </div>
+
+    <aside class="summary">
+      <h2>Buyurtmangiz</h2>
+      {% if totals.free_left %}
+        <div class="free-bar">Bepul yetkazib berishgacha yana <b>{{ totals.free_left|som }}</b>
+          <div class="free-bar__track"><span style="width: {{ totals.free_progress }}%"></span></div></div>
+      {% else %}
+        <div class="free-bar free-bar--done">✓ Yetkazib berish bepul!</div>
+      {% endif %}
+
+      <div class="summary__row"><span>Mahsulotlar ({{ cart_count }} dona)</span><span>{{ totals.subtotal|som }}</span></div>
+      {% if promo %}
+        <div class="promo-applied">
+          <span><svg class="ic" style="display:inline; vertical-align:-4px"><use href="#i-tag"/></svg> <b>{{ promo.code }}</b> — {{ promo.percent }}% chegirma</span>
+          <form action="{% url 'orders:promo_remove' %}" method="post">{% csrf_token %}<button type="submit">Bekor qilish</button></form>
+        </div>
+        {% if totals.promo_note %}<p class="cline__warn" style="margin:-6px 0 12px">{{ totals.promo_note }}</p>{% endif %}
+      {% else %}
+        <form class="promo-form" action="{% url 'orders:promo_apply' %}" method="post">
+          {% csrf_token %}
+          <input type="text" name="code" placeholder="Promokod" aria-label="Promokod" autocomplete="off">
+          <button class="btn btn--outline btn--sm" type="submit" style="min-height:46px">Qo'llash</button>
+        </form>
+      {% endif %}
+      {% if totals.discount %}<div class="summary__row summary__row--discount"><span>Chegirma</span><span>−{{ totals.discount|som }}</span></div>{% endif %}
+      <div class="summary__row"><span>Yetkazib berish</span><span>{% if totals.delivery_cost %}{{ totals.delivery_cost|som }}{% else %}Bepul{% endif %}</span></div>
+      <div class="summary__total"><span>Jami</span><b>{{ totals.total|som }}</b></div>
+      <a class="btn btn--dark btn--block" href="{% url 'orders:checkout' %}">Rasmiylashtirish <svg class="ic"><use href="#i-arrow"/></svg></a>
+      <p class="summary__note"><svg class="ic"><use href="#i-shield"/></svg> Yetkazib berish narxi viloyatga qarab keyingi bosqichda aniqlanadi. Toshkent — {{ site.delivery_tashkent|som }}, viloyatlar — {{ site.delivery_regions|som }}.</p>
+    </aside>
+  </div>
+{% else %}
+  <div class="section--tight" style="padding-top:50px; padding-bottom:90px">
+    <div class="empty">
+      <svg class="ic"><use href="#i-bag"/></svg>
+      <h2>Savatchangiz bo'sh</h2>
+      <p>Katalogdan o'zingizga yoqqan hidni tanlang yoki atir tanlash testidan o'ting.</p>
+      <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap">
+        <a class="btn btn--dark" href="{% url 'shop:catalog' %}">Katalogga o'tish</a>
+        <a class="btn btn--outline" href="{% url 'shop:quiz' %}">Atir tanlash testi</a>
+      </div>
+    </div>
+  </div>
+{% endif %}
+</div>
+{% endblock %}

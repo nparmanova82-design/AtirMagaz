@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load shop_tags %}
+
+{% block title %}Atir tanlash testi — AtirMagaz{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs" aria-label="Yo'l"><a href="{% url 'shop:home' %}">Bosh sahifa</a><span aria-hidden="true">/</span><span>Atir tanlash testi</span></nav>
+    <h1>{% if results %}Sizga mos atirlar{% else %}Atiringizni topamiz{% endif %}</h1>
+    <p>{% if results %}Javoblaringiz asosida katalogimizdan eng mos {{ results|length }} ta hidni tanladik. Ishonchingiz komil bo'lmasa — avval 5 ml probnik oling.{% else %}4 ta savol — 1 daqiqa. Maslahatchilarimiz butikda beradigan savollarning o'zi.{% endif %}</p>
+  </div>
+</section>
+
+{% if results %}
+  <section class="section section--tight quiz-results">
+    <div class="container">
+      <div class="chips">
+        {% for step in steps %}{% for value, label, hint in step.options %}{% if value == answers|get_item:step.name %}<span class="chip chip--active">{{ label }}</span>{% endif %}{% endfor %}{% endfor %}
+        <a class="chips__clear" href="{% url 'shop:quiz' %}">Testni qaytadan o'tish</a>
+      </div>
+      <div class="grid grid--3">
+        {% for p in results %}{% include "includes/product_card.html" with match=p.match %}{% endfor %}
+      </div>
+    </div>
+  </section>
+{% else %}
+  <div class="container">
+    <form class="quiz" method="get" data-quiz>
+      <div class="quiz__progress">{% for step in steps %}<i></i>{% endfor %}</div>
+      {% for step in steps %}
+        <fieldset class="quiz__step {% if forloop.first %}is-active{% endif %}" style="border:0; margin:0; padding:0">
+          <span class="eyebrow">Savol {{ forloop.counter }} / {{ steps|length }}</span>
+          <h2>{{ step.title }}</h2>
+          <div class="options {% if step.options|length == 3 %}options--3{% else %}options--2{% endif %}">
+            {% for value, label, hint in step.options %}
+              <label class="option">
+                <input type="radio" name="{{ step.name }}" value="{{ value }}">
+                <span class="option__box"><b>{{ label }}</b><small>{{ hint }}</small></span>
+              </label>
+            {% endfor %}
+          </div>
+        </fieldset>
+      {% endfor %}
+      <div class="quiz__nav">
+        <button class="btn btn--outline" type="button" data-quiz-back><svg class="ic"><use href="#i-chev-left"/></svg> Orqaga</button>
+        <button class="btn btn--dark" type="button" data-quiz-next>Keyingisi <svg class="ic"><use href="#i-arrow"/></svg></button>
+        <button class="btn btn--gold" type="submit" data-quiz-submit hidden><svg class="ic"><use href="#i-sparkle"/></svg> Natijani ko'rish</button>
+      </div>
+    </form>
+  </div>
+{% endif %}
+{% endblock %}

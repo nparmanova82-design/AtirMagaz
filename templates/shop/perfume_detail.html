@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% load shop_tags %}
+
+{% block title %}{{ perfume }} {{ perfume.get_concentration_display }} — AtirMagaz{% endblock %}
+{% block description %}{{ perfume }} — {{ perfume.description|truncatechars:150 }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 22px">
+  <nav class="crumbs" aria-label="Yo'l">
+    <a href="{% url 'shop:home' %}">Bosh sahifa</a><span aria-hidden="true">/</span>
+    <a href="{% url 'shop:catalog' %}?gender={{ perfume.gender }}">{{ perfume.get_gender_display }}</a><span aria-hidden="true">/</span>
+    <a href="{{ perfume.brand.get_absolute_url }}">{{ perfume.brand.name }}</a><span aria-hidden="true">/</span>
+    <span>{{ perfume.name }}</span>
+  </nav>
+</div>
+
+<div class="container product">
+  <div class="gallery">
+    <div class="gallery__main" style="--tint: {{ perfume.color }}">
+      <div class="gallery__badges">
+        {% if perfume.is_new %}<span class="badge badge--new">Yangi</span>{% endif %}
+        {% if perfume.is_bestseller %}<span class="badge">Xit</span>{% endif %}
+        {% if perfume.brand.is_niche %}<span class="badge badge--soft">Nish</span>{% endif %}
+      </div>
+      {% bottle perfume %}
+    </div>
+    <div class="gallery__notes">
+      {% for n in perfume.heart_notes.all|slice:":4" %}<a class="note-chip" href="{% url 'shop:catalog' %}?note={{ n.slug }}">{{ n.name }}</a>{% endfor %}
+      {% for n in perfume.base_notes.all|slice:":3" %}<a class="note-chip" href="{% url 'shop:catalog' %}?note={{ n.slug }}">{{ n.name }}</a>{% endfor %}
+    </div>
+  </div>
+
+  <div class="pinfo">
+    <a class="pinfo__brand" href="{{ perfume.brand.get_absolute_url }}">{{ perfume.brand.name }}</a>
+    <h1 class="pinfo__title">{{ perfume.name }}</h1>
+    <p class="pinfo__sub">{{ perfume.get_concentration_display }} · {{ perfume.get_gender_display }}{% if perfume.year %} · {{ perfume.year }}{% endif %}</p>
+    {% if perfume.reviews_total %}
+      <div class="pinfo__rating">{% stars perfume.rating "lg" %}<b>{{ perfume.rating|floatformat:1 }}</b><a href="#sharhlar">{{ perfume.reviews_total }} ta sharh</a></div>
+    {% endif %}
+
+    <p class="pinfo__desc">{{ perfume.description }}</p>
+
+    {% if selected %}
+    <div class="pinfo__price">
+      <span class="pinfo__price-now" data-price-now>{{ selected.price|som }}</span>
+      <s class="pinfo__price-old" data-price-old {% if not selected.old_price %}hidden{% endif %}>{{ selected.old_price|som }}</s>
+      <span class="badge badge--sale" data-price-badge {% if not selected.discount_percent %}hidden{% endif %}>−{{ selected.discount_percent }}%</span>
+    </div>
+
+    <form action="{% url 'orders:cart_add' %}" method="post" data-buy data-cart-form>
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <div class="vol-label"><span>Hajm: <span data-vol-label>{{ selected.label }}</span></span><span>Probnik — hidni sinab ko'rish uchun</span></div>
+      <div class="volumes">
+        {% for v in variants %}
+          <label class="vol {% if not v.stock %}vol--out{% endif %} {% if v.is_sample %}vol--sample{% endif %}">
+            <input type="radio" name="variant" value="{{ v.pk }}" {% if v == selected %}checked{% endif %}
+                   data-price="{{ v.price }}" data-old="{{ v.old_price|default_if_none:'' }}"
+                   data-discount="{% if v.discount_percent %}{{ v.discount_percent }}{% endif %}" data-stock="{{ v.stock }}">
+            <span><b>{{ v.label }}</b>{{ v.price|som }}</span>
+          </label>
+        {% endfor %}
+      </div>
+
+      <div class="buy">
+        <div class="qty" data-qty>
+          <button type="button" data-minus aria-label="Kamaytirish"><svg class="ic"><use href="#i-minus"/></svg></button>
+          <input type="number" name="quantity" value="1" min="1" max="{{ selected.stock|default:1 }}" aria-label="Soni">
+          <button type="button" data-plus aria-label="Ko'paytirish"><svg class="ic"><use href="#i-plus"/></svg></button>
+        </div>
+        <button class="btn btn--dark" type="submit" data-buy-submit {% if not selected.stock %}disabled{% endif %}>
+          <svg class="ic"><use href="#i-bag"/></svg><span>Savatga qo'shish</span>
+        </button>
+      </div>
+    </form>
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap">
+      <p class="stock-note" data-stock-note>Omborda bor — bugun jo'natamiz</p>
+      <form action="{% url 'shop:wishlist_toggle' perfume.pk %}" method="post" data-wishlist-form style="margin-top:14px">
+        {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <button class="wish-btn {% if perfume.pk in wishlist_ids %}is-active{% endif %}" type="submit" style="width:auto; padding:0 14px; border-radius:99px; gap:8px; display:inline-flex; font-size:13px; font-weight:600; background:var(--sand)">
+          <svg class="ic"><use href="#i-heart"/></svg> Sevimlilarga
+        </button>
+      </form>
+    </div>
+    {% endif %}
+
+    <div class="assure">
+      <div class="assure__row"><svg class="ic"><use href="#i-truck"/></svg><div><b>Toshkent bo'ylab — 1 kunda</b><span>{{ site.free_delivery_from|som }}dan yuqori buyurtmalarga bepul</span></div></div>
+      <div class="assure__row"><svg class="ic"><use href="#i-shield"/></svg><div><b>100% original kafolati</b><span>Sertifikat va bojxona hujjatlari bilan</span></div></div>
+      <div class="assure__row"><svg class="ic"><use href="#i-gift"/></svg><div><b>2 ta probnik sovg'a</b><span>Har bir buyurtmaga — yangi hidlarni kashf eting</span></div></div>
+      <div class="assure__row"><svg class="ic"><use href="#i-refresh"/></svg><div><b>14 kun ichida qaytarish</b><span>Ochilmagan qadoqdagi mahsulotlar uchun</span></div></div>
+    </div>
+  </div>
+</div>
+
+<section class="container" data-tabs id="tafsilotlar" style="padding-bottom: 70px">
+  <div class="tabs">
+    <div class="tabs__nav" role="tablist">
+      <button type="button" class="is-active" data-tab="piramida">Hid piramidasi</button>
+      <button type="button" data-tab="xususiyatlar">Xususiyatlar</button>
+      <button type="button" data-tab="sharhlar">Sharhlar ({{ reviews|length }})</button>
+    </div>
+
+    <div class="tabs__panel" data-panel="piramida">
+      <div class="pyramid">
+        {% for title, when, notes in pyramid %}
+          <div class="pyramid__row">
+            <div class="pyramid__label"><b>{{ title }}</b><span>{{ when }}</span></div>
+            <div class="pyramid__notes">
+              {% for n in notes %}<a class="note-chip" href="{% url 'shop:catalog' %}?note={{ n.slug }}">{{ n.name }}</a>{% empty %}<span class="muted">—</span>{% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="meters">
+        <div>
+          <div class="meter__head"><b>Turg'unlik</b><span>{% if perfume.longevity >= 5 %}12+ soat{% elif perfume.longevity == 4 %}8–10 soat{% elif perfume.longevity == 3 %}5–7 soat{% else %}2–4 soat{% endif %}</span></div>
+          <div class="meter__bar">{% for i in "12345" %}<i class="{% if forloop.counter <= perfume.longevity %}on{% endif %}"></i>{% endfor %}</div>
+        </div>
+        <div>
+          <div class="meter__head"><b>Shleyf (iz)</b><span>{% if perfume.sillage >= 5 %}Juda kuchli{% elif perfume.sillage == 4 %}Kuchli{% elif perfume.sillage == 3 %}O'rtacha{% else %}Teriga yaqin{% endif %}</span></div>
+          <div class="meter__bar">{% for i in "12345" %}<i class="{% if forloop.counter <= perfume.sillage %}on{% endif %}"></i>{% endfor %}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs__panel" data-panel="xususiyatlar" hidden>
+      <dl class="specs">
+        <div class="specs__row"><dt>Brend</dt><dd><a href="{{ perfume.brand.get_absolute_url }}">{{ perfume.brand.name }}</a></dd></div>
+        <div class="specs__row"><dt>Mamlakat</dt><dd>{{ perfume.brand.country|default:"—" }}</dd></div>
+        <div class="specs__row"><dt>Kim uchun</dt><dd>{{ perfume.get_gender_display }}</dd></div>
+        <div class="specs__row"><dt>Konsentratsiya</dt><dd>{{ perfume.get_concentration_display }}</dd></div>
+        <div class="specs__row"><dt>Hid oilasi</dt><dd><a href="{% url 'shop:catalog' %}?family={{ perfume.family }}">{{ perfume.get_family_display }}</a></dd></div>
+        <div class="specs__row"><dt>Chiqarilgan yil</dt><dd>{{ perfume.year|default:"—" }}</dd></div>
+        <div class="specs__row"><dt>Parfyumer</dt><dd>{{ perfume.perfumer|default:"—" }}</dd></div>
+        <div class="specs__row"><dt>Fasl</dt><dd>{{ perfume.get_season_display }}</dd></div>
+        <div class="specs__row"><dt>Vaqt</dt><dd>{{ perfume.get_time_of_day_display }}</dd></div>
+        <div class="specs__row"><dt>Mavjud hajmlar</dt><dd>{% for v in variants %}{{ v.volume_ml }} ml{% if not forloop.last %}, {% endif %}{% endfor %}</dd></div>
+      </dl>
+    </div>
+
+    <div class="tabs__panel" data-panel="sharhlar" id="sharhlar" hidden>
+      <div class="rv">
+        <aside class="rv__summary">
+          <div class="rv__avg">{{ perfume.rating|default:0|floatformat:1 }}</div>
+          {% stars perfume.rating "lg" %}
+          <p class="muted" style="margin-top:8px">{{ reviews|length }} ta sharh asosida</p>
+          <div class="rv__dist">
+            {% for d in distribution %}<div><span>{{ d.star }} ★</span><i><span style="width: {{ d.pct }}%"></span></i><span>{{ d.n }}</span></div>{% endfor %}
+          </div>
+          <a class="btn btn--outline btn--block" href="#sharh-yozish">Sharh yozish</a>
+        </aside>
+        <div>
+          <div class="rv__list">
+            {% for r in reviews %}
+              <article class="rv__item">
+                <div class="rv__head"><span class="avatar">{{ r.name|first }}</span><div><b>{{ r.name }}</b><br>{% stars r.rating %}</div><time datetime="{{ r.created_at|date:'c' }}">{{ r.created_at|date:"d.m.Y" }}</time></div>
+                <p>{{ r.text }}</p>
+              </article>
+            {% empty %}
+              <div class="empty" style="padding:40px"><h3>Hali sharh yo'q</h3><p>Birinchi bo'lib fikringizni qoldiring!</p></div>
+            {% endfor %}
+          </div>
+          <form class="rv-form" method="post" id="sharh-yozish" action="{{ perfume.get_absolute_url }}#sharhlar">
+            {% csrf_token %}
+            <h3>Fikringizni qoldiring</h3>
+            {% if form.errors %}<div class="form-error">Iltimos, maydonlarni to'g'ri to'ldiring.</div>{% endif %}
+            <div class="form-grid">
+              <div class="field"><label for="{{ form.name.id_for_label }}">Ism</label>{{ form.name }}</div>
+              <div class="field"><span class="field__label">Baho</span>
+                <div class="star-input">
+                  {% for radio in form.rating %}
+                    {{ radio.tag }}<label for="{{ radio.id_for_label }}" title="{{ radio.choice_label }}">★</label>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="field full"><label for="{{ form.text.id_for_label }}">Sharh</label>{{ form.text }}</div>
+            </div>
+            <button class="btn btn--dark" type="submit" style="margin-top:16px">Yuborish</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if similar %}
+<section class="section section--sand">
+  <div class="container">
+    <div class="section-head"><div><span class="eyebrow">Sizga yoqishi mumkin</span><h2>O'xshash atirlar</h2></div></div>
+    <div class="grid">{% for p in similar %}{% include "includes/product_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+
+{% if recent %}
+<section class="section">
+  <div class="container">
+    <div class="section-head"><div><span class="eyebrow">Tarix</span><h2>Yaqinda ko'rganlaringiz</h2></div></div>
+    <div class="grid">{% for p in recent %}{% include "includes/product_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

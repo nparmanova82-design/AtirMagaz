@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Brendlar — AtirMagaz{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs" aria-label="Yo'l"><a href="{% url 'shop:home' %}">Bosh sahifa</a><span aria-hidden="true">/</span><span>Brendlar</span></nav>
+    <h1>Brendlar</h1>
+    <p>{{ total }} ta parfyumeriya uyi — afsonaviy fransuz klassikasidan tortib nish laboratoriyalargacha. Har bir brendni rasmiy distribyutorlar orqali olib kelamiz.</p>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container">
+    {% if niche %}
+      <div class="section-head"><div><span class="eyebrow">Selektiv</span><h2>Nish parfyumeriya uylari</h2></div></div>
+      <div class="brand-list" style="margin-bottom: 64px">
+        {% for b in niche %}
+          <a class="brand-tile" href="{{ b.get_absolute_url }}"><b>{{ b.name }}</b><span>{{ b.country }}{% if b.founded %} · {{ b.founded }}-yildan{% endif %} · {{ b.n }} ta atir</span></a>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="section-head"><div><span class="eyebrow">A — Z</span><h2>Barcha brendlar</h2></div></div>
+    <nav class="az" aria-label="Alifbo">
+      {% for letter, items in groups %}<a href="#harf-{{ letter }}">{{ letter }}</a>{% endfor %}
+    </nav>
+    <div class="brand-groups">
+      {% for letter, items in groups %}
+        <div class="brand-group" id="harf-{{ letter }}">
+          <div class="brand-group__letter">{{ letter }}</div>
+          <div class="brand-list">
+            {% for b in items %}
+              <a class="brand-tile" href="{{ b.get_absolute_url }}">
+                <b>{{ b.name }}</b>
+                <span>{{ b.country }} · {{ b.n }} ta atir</span>
+                {% if b.is_niche %}<span class="badge badge--soft">Nish</span>{% endif %}
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

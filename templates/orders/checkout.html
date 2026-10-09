@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load shop_tags %}
+
+{% block title %}Buyurtmani rasmiylashtirish — AtirMagaz{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs" aria-label="Yo'l"><a href="{% url 'shop:home' %}">Bosh sahifa</a><span aria-hidden="true">/</span><a href="{% url 'orders:cart' %}">Savatcha</a><span aria-hidden="true">/</span><span>Rasmiylashtirish</span></nav>
+    <h1>Rasmiylashtirish</h1>
+    {% if not user.is_authenticated %}<p>Hisobingiz bormi? <a href="{% url 'accounts:login' %}?next={{ request.path }}" style="text-decoration:underline">Kiring</a> — ma'lumotlar avtomatik to'ldiriladi va buyurtmalar tarixi saqlanadi.</p>{% endif %}
+  </div>
+</section>
+
+<form class="container checkout" method="post" novalidate data-checkout
+      data-subtotal="{{ totals.subtotal }}" data-discount="{{ totals.discount }}"
+      data-free-from="{{ shop.free_delivery_from }}" data-tashkent="{{ shop.delivery_tashkent }}"
+      data-regions="{{ shop.delivery_regions }}" data-wrap="{{ shop.gift_wrap_price }}">
+  {% csrf_token %}
+  <div>
+    {% if form.non_field_errors %}<div class="form-error">{{ form.non_field_errors|join:" " }}</div>{% elif form.errors %}<div class="form-error">Iltimos, belgilangan maydonlarni tekshiring.</div>{% endif %}
+
+    <div class="step">
+      <div class="step__head"><span class="step__num">1</span><h2>Aloqa ma'lumotlari</h2></div>
+      <div class="form-grid">
+        {% for field in form %}{% if field.name == "full_name" or field.name == "phone" or field.name == "email" %}
+          <div class="field {% if field.name == 'email' %}full{% endif %} {% if field.errors %}field--error{% endif %}">
+            <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+            {{ field }}{{ field.errors }}
+          </div>
+        {% endif %}{% endfor %}
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step__head"><span class="step__num">2</span><h2>Yetkazib berish</h2></div>
+      <div class="options options--3 {% if form.delivery.errors %}field--error{% endif %}">
+        {% for radio in form.delivery %}
+          <label class="option">
+            {{ radio.tag }}
+            <span class="option__box">
+              <svg class="ic">{% if radio.data.value == "courier" %}<use href="#i-truck"/>{% elif radio.data.value == "pickup" %}<use href="#i-store"/>{% else %}<use href="#i-mail"/>{% endif %}</svg>
+              <span><b>{{ radio.choice_label }}</b>
+                <small>{% if radio.data.value == "courier" %}Toshkent — 1 kunda{% elif radio.data.value == "pickup" %}Bugunoq, bepul{% else %}2–4 ish kuni{% endif %}</small></span>
+            </span>
+          </label>
+        {% endfor %}
+      </div>
+      {{ form.delivery.errors }}
+      <div class="form-grid" style="margin-top:18px">
+        <div class="field {% if form.region.errors %}field--error{% endif %}">
+          <label for="{{ form.region.id_for_label }}">{{ form.region.label }}</label>{{ form.region }}{{ form.region.errors }}
+        </div>
+        <div class="field" data-address-field>
+          <label for="{{ form.address.id_for_label }}">{{ form.address.label }} *</label>{{ form.address }}{{ form.address.errors }}
+        </div>
+      </div>
+      <p class="field__help" style="margin-top:12px">Olib ketish manzili: {{ site.address }}, {{ site.hours|lower }}.</p>
+    </div>
+
+    <div class="step">
+      <div class="step__head"><span class="step__num">3</span><h2>To'lov usuli</h2></div>
+      <div class="options options--2">
+        {% for radio in form.payment %}
+          <label class="option">
+            {{ radio.tag }}
+            <span class="option__box">
+              <svg class="ic">{% if radio.data.value == "cash" %}<use href="#i-tag"/>{% else %}<use href="#i-card"/>{% endif %}</svg>
+              <span><b>{{ radio.choice_label }}</b>
+                <small>{% if radio.data.value == "cash" or radio.data.value == "card" %}Kuryerga yoki do'konda{% else %}Operator tasdiqlagach havola yuboriladi{% endif %}</small></span>
+            </span>
+          </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step__head"><span class="step__num">4</span><h2>Qo'shimcha</h2></div>
+      <label class="toggle">
+        {{ form.gift_wrap }}
+        <span><b>Sovg'a qadog'i — {{ shop.gift_wrap_price|som }}</b><small>Brendli quti, atlas lenta va qo'lda yozilgan otkritka. Chekni qutiga solmaymiz.</small></span>
+      </label>
+      <div class="field" data-gift-note style="margin-top:14px">
+        <label for="{{ form.gift_note.id_for_label }}">Otkritka matni</label>{{ form.gift_note }}
+      </div>
+      <div class="field" style="margin-top:14px">
+        <label for="{{ form.comment.id_for_label }}">Buyurtmaga izoh</label>{{ form.comment }}
+      </div>
+    </div>
+  </div>
+
+  <aside class="summary">
+    <h2>Buyurtmangiz</h2>
+    <div class="mini-lines">
+      {% for line in lines %}
+        <div class="mini-line">
+          <span class="mini-line__media" style="--tint: {{ line.perfume.color }}">{% bottle line.perfume %}<span class="mini-line__qty">{{ line.quantity }}</span></span>
+          <span><b>{{ line.perfume }}</b><span>{{ line.variant.label }}</span></span>
+          <span>{{ line.total|som }}</span>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="summary__row"><span>Mahsulotlar</span><span>{{ totals.subtotal|som }}</span></div>
+    {% if totals.discount %}<div class="summary__row summary__row--discount"><span>Chegirma ({{ promo.code }})</span><span>−{{ totals.discount|som }}</span></div>{% endif %}
+    <div class="summary__row"><span>Yetkazib berish</span><span data-sum-delivery>{% if totals.delivery_cost %}{{ totals.delivery_cost|som }}{% else %}Bepul{% endif %}</span></div>
+    <div class="summary__row" data-sum-wrap-row {% if not totals.gift_wrap_cost %}hidden{% endif %}><span>Sovg'a qadog'i</span><span data-sum-wrap>{{ totals.gift_wrap_cost|som }}</span></div>
+    <div class="summary__total"><span>Jami</span><b data-sum-total>{{ totals.total|som }}</b></div>
+    <button class="btn btn--dark btn--block" type="submit">Buyurtmani tasdiqlash</button>
+    <p class="summary__note"><svg class="ic"><use href="#i-phone"/></svg> Operatorimiz 15 daqiqa ichida qo'ng'iroq qilib, buyurtmani tasdiqlaydi.</p>
+  </aside>
+</form>
+{% endblock %}

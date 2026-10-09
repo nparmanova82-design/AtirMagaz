@@ -66,7 +66,8 @@ def url_without(request, field, value=None):
 @register.inclusion_tag("includes/stars.html")
 def stars(rating, size="sm"):
     rating = float(rating or 0)
-    return {"rating": rating, "pct": round(rating / 5 * 100, 1), "size": size}
+    # CSS uchun satr: lokal formatlash «93,3» qilib qo'ymasligi kerak
+    return {"rating": rating, "pct": f"{rating / 5 * 100:.1f}", "size": size}
 
 
 def _rgb(hex_color):

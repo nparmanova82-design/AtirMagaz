@@ -1,0 +1,45 @@
+{% load shop_tags %}
+<article class="pcard" style="--tint: {{ p.color }}">
+  <a class="pcard__media" href="{{ p.get_absolute_url }}" tabindex="-1" aria-hidden="true">
+    {% bottle p "pcard__bottle" %}
+  </a>
+  <div class="pcard__badges">
+    {% with d=p.discount_percent %}{% if d %}<span class="badge badge--sale">−{{ d }}%</span>{% endif %}{% endwith %}
+    {% if p.is_new %}<span class="badge badge--new">Yangi</span>{% endif %}
+    {% if p.is_bestseller %}<span class="badge">Xit</span>{% endif %}
+  </div>
+  <form class="pcard__wish" action="{% url 'shop:wishlist_toggle' p.pk %}" method="post" data-wishlist-form>
+    {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+    <button class="wish-btn {% if p.pk in wishlist_ids %}is-active{% endif %}" type="submit" aria-label="Sevimlilarga">
+      <svg class="ic"><use href="#i-heart"/></svg>
+    </button>
+  </form>
+  {% if match is not None %}<span class="pcard__match">{{ match }}% mos</span>{% endif %}
+  <div class="pcard__body">
+    <a class="pcard__brand" href="{{ p.brand.get_absolute_url }}">{{ p.brand.name }}</a>
+    <h3 class="pcard__name"><a href="{{ p.get_absolute_url }}">{{ p.name }}</a></h3>
+    <p class="pcard__meta">{{ p.get_concentration_display }} · {{ p.get_family_display }}</p>
+    {% if p.reviews_total %}
+      <p class="pcard__rating">{% stars p.rating %}<span>{{ p.rating|floatformat:1 }} ({{ p.reviews_total }})</span></p>
+    {% endif %}
+    <div class="pcard__foot">
+      <div class="price">
+        {% if p.old_price_from and p.old_price_from > p.price_from %}<s>{{ p.old_price_from|som }}</s>{% endif %}
+        <span class="price__now">{{ p.price_from|som }}{% if p.variants.all|length > 1 %}<small> dan</small>{% endif %}</span>
+      </div>
+      {% with v=p.default_variant %}
+        {% if v and v.stock %}
+          <form action="{% url 'orders:cart_add' %}" method="post" data-cart-form>
+            {% csrf_token %}<input type="hidden" name="variant" value="{{ v.pk }}">
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <button class="cart-btn" type="submit" aria-label="Savatga: {{ v.label }}" title="Savatga — {{ v.label }}">
+              <svg class="ic"><use href="#i-bag"/></svg><span>Savatga</span>
+            </button>
+          </form>
+        {% else %}
+          <span class="pcard__out">Tugagan</span>
+        {% endif %}
+      {% endwith %}
+    </div>
+  </div>
+</article>

@@ -1,0 +1,12 @@
+{% load shop_tags %}
+{% if page.paginator.num_pages > 1 %}
+<nav class="pagination" aria-label="Sahifalar">
+  {% if page.has_previous %}<a href="?{% url_replace request 'page' page.previous_page_number %}" aria-label="Oldingi"><svg class="ic"><use href="#i-chev-left"/></svg></a>{% endif %}
+  {% for n in page_range %}
+    {% if n == page.number %}<span class="is-current" aria-current="page">{{ n }}</span>
+    {% elif n == page.paginator.ELLIPSIS %}<span class="is-gap">…</span>
+    {% else %}<a href="?{% url_replace request 'page' n %}">{{ n }}</a>{% endif %}
+  {% endfor %}
+  {% if page.has_next %}<a href="?{% url_replace request 'page' page.next_page_number %}" aria-label="Keyingi"><svg class="ic"><use href="#i-chev-right"/></svg></a>{% endif %}
+</nav>
+{% endif %}

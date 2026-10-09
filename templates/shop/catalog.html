@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load shop_tags %}
+
+{% block title %}{{ title }} — AtirMagaz{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs" aria-label="Yo'l"><a href="{% url 'shop:home' %}">Bosh sahifa</a><span aria-hidden="true">/</span><span>Katalog</span></nav>
+    <h1>{{ title }}</h1>
+    {% if request.GET.q %}<p>«{{ request.GET.q }}» so'rovi bo'yicha atir, brend va notalar orasidan qidirdik.</p>
+    {% else %}<p>Faqat original atirlar — rasmiy distribyutorlardan. Har bir hajmga probnik olish mumkin.</p>{% endif %}
+  </div>
+</section>
+
+<div class="container catalog">
+  <form class="filters" id="filters" method="get" action="">
+    <div class="filters__head">
+      Filtrlar
+      <button class="icon-btn" type="button" data-filters-close aria-label="Yopish"><svg class="ic ic--lg"><use href="#i-close"/></svg></button>
+    </div>
+    {% if request.GET.q %}<input type="hidden" name="q" value="{{ request.GET.q }}">{% endif %}
+    {% if request.GET.note %}<input type="hidden" name="note" value="{{ request.GET.note }}">{% endif %}
+    <input type="hidden" name="sort" value="{{ sort }}">
+
+    <details class="fgroup" open>
+      <summary>Kim uchun <svg class="ic"><use href="#i-chev-down"/></svg></summary>
+      <div class="fgroup__body">
+        {% for key, label in genders %}
+          <label class="check"><input type="checkbox" name="gender" value="{{ key }}" {% if key in selected.gender %}checked{% endif %}> {{ label }}</label>
+        {% endfor %}
+      </div>
+    </details>
+
+    <details class="fgroup" open>
+      <summary>Narx, so'm <svg class="ic"><use href="#i-chev-down"/></svg></summary>
+      <div class="price-range">
+        <input type="number" name="min" min="0" step="10000" placeholder="dan" value="{{ request.GET.min }}" aria-label="Minimal narx">
+        <input type="number" name="max" min="0" step="10000" placeholder="gacha" value="{{ request.GET.max }}" aria-label="Maksimal narx">
+      </div>
+    </details>
+
+    <details class="fgroup" open>
+      <summary>Brend <svg class="ic"><use href="#i-chev-down"/></svg></summary>
+      <div class="fgroup__body fgroup__body--scroll">
+        {% for b in brands %}
+          <label class="check"><input type="checkbox" name="brand" value="{{ b.slug }}" {% if b.slug in selected.brand %}checked{% endif %}> {{ b.name }}<span class="check__n">{{ b.n }}</span></label>
+        {% endfor %}
+      </div>
+    </details>
+
+    <details class="fgroup" open>
+      <summary>Hid oilasi <svg class="ic"><use href="#i-chev-down"/></svg></summary>
+      <div class="fgroup__body">
+        {% for key, label in families %}
+          <label class="check"><input type="checkbox" name="family" value="{{ key }}" {% if key in selected.family %}checked{% endif %}> {{ label }}</label>
+        {% endfor %}
+      </div>
+    </details>
+
+    <details class="fgroup">
+      <summary>Konsentratsiya <svg class="ic"><use href="#i-chev-down"/></svg></summary>
+      <div class="fgroup__body">
+        {% for key, label in concentrations %}
+          <label class="check"><input type="checkbox" name="conc" value="{{ key }}" {% if key in selected.conc %}checked{% endif %}> {{ label }}</label>
+        {% endfor %}
+      </div>
+    </details>
+
+    <details class="fgroup" open>
+      <summary>Boshqa <svg class="ic"><use href="#i-chev-down"/></svg></summary>
+      <div class="fgroup__body">
+        <label class="check"><input type="checkbox" name="sale" value="1" {% if request.GET.sale %}checked{% endif %}> Chegirmadagilar</label>
+        <label class="check"><input type="checkbox" name="new" value="1" {% if request.GET.new %}checked{% endif %}> Yangi kelganlar</label>
+        <label class="check"><input type="checkbox" name="niche" value="1" {% if request.GET.niche %}checked{% endif %}> Nish brendlar</label>
+        <label class="check"><input type="checkbox" name="stock" value="1" {% if request.GET.stock %}checked{% endif %}> Faqat mavjudlari</label>
+      </div>
+    </details>
+
+    <div class="filters__actions">
+      <button class="btn btn--dark btn--block" type="submit">Ko'rsatish</button>
+      {% if chips %}<a class="btn btn--outline btn--block" href="{% url 'shop:catalog' %}">Filtrlarni tozalash</a>{% endif %}
+    </div>
+  </form>
+
+  <div>
+    <div class="toolbar">
+      <p class="toolbar__count">Topildi: <b>{{ total }}</b> ta atir</p>
+      <div class="toolbar__right">
+        <button class="btn btn--outline btn--sm filter-btn" type="button" data-filters-open><svg class="ic"><use href="#i-filter"/></svg> Filtrlar{% if chips %} · {{ chips|length }}{% endif %}</button>
+        <form method="get">
+          {% for key, values in request.GET.lists %}{% if key != "sort" and key != "page" %}{% for v in values %}<input type="hidden" name="{{ key }}" value="{{ v }}">{% endfor %}{% endif %}{% endfor %}
+          <label class="sr-only" for="sort">Saralash</label>
+          <select class="select" id="sort" name="sort" data-autosubmit>
+            {% for key, label in sorts %}<option value="{{ key }}" {% if key == sort %}selected{% endif %}>{{ label }}</option>{% endfor %}
+          </select>
+        </form>
+      </div>
+    </div>
+
+    {% if chips %}
+      <div class="chips">
+        {% for field, value, label in chips %}
+          <a class="chip" href="?{% url_without request field value %}">{{ label }} <svg class="ic"><use href="#i-close"/></svg></a>
+        {% endfor %}
+        <a class="chips__clear" href="{% url 'shop:catalog' %}">Hammasini tozalash</a>
+      </div>
+    {% endif %}
+
+    {% if page.object_list %}
+      <div class="grid grid--3">
+        {% for p in page.object_list %}{% include "includes/product_card.html" %}{% endfor %}
+      </div>
+      {% include "includes/pagination.html" %}
+    {% else %}
+      <div class="empty">
+        <svg class="ic"><use href="#i-search"/></svg>
+        <h2>Hech narsa topilmadi</h2>
+        <p>Filtrlarni o'zgartirib ko'ring yoki maslahatchimizdan yordam so'rang — biz albatta mos atir topamiz.</p>
+        <a class="btn btn--dark" href="{% url 'shop:catalog' %}">Barcha atirlar</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

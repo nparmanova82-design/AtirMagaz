@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Sevimlilar — AtirMagaz{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs" aria-label="Yo'l"><a href="{% url 'shop:home' %}">Bosh sahifa</a><span aria-hidden="true">/</span><span>Sevimlilar</span></nav>
+    <h1>Sevimlilar</h1>
+    <p>Yoqqan atirlarni shu yerda saqlang — keyinroq solishtirib, eng mosini tanlaysiz.</p>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container">
+    {% if perfumes %}
+      <div class="grid">
+        {% for p in perfumes %}<div data-remove-on-unwish style="display:contents">{% include "includes/product_card.html" %}</div>{% endfor %}
+      </div>
+    {% else %}
+      <div class="empty">
+        <svg class="ic"><use href="#i-heart"/></svg>
+        <h2>Hozircha bo'sh</h2>
+        <p>Atir kartochkasidagi yurakcha belgisini bosing — u shu yerda paydo bo'ladi.</p>
+        <a class="btn btn--dark" href="{% url 'shop:catalog' %}">Katalogga o'tish</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
