@@ -244,15 +244,16 @@ def perfume_detail(request, slug):
             initial["name"] = request.user.first_name or request.user.username
         form = ReviewForm(initial=initial)
 
-    similar = list(
-        Perfume.objects.active().with_stats().prefetch_related("variants")
-        .filter(family=perfume.family, gender__in=[perfume.gender, Perfume.Gender.UNISEX])
-        .exclude(pk=perfume.pk).order_by("-sold_count")[:4])
-    if len(similar) < 4:
-        similar += list(
-            Perfume.objects.active().with_stats().prefetch_related("variants")
-            .filter(brand=perfume.brand).exclude(pk__in=[perfume.pk, *[p.pk for p in similar]])
-            [:4 - len(similar)])
+    # O'xshashlar: avval shu oila, keyin shu brend, keyin shu jins uchun ommaboplar
+    candidates = Perfume.objects.active().with_stats().prefetch_related("variants").order_by("-sold_count")
+    genders = [perfume.gender, Perfume.Gender.UNISEX]
+    similar = []
+    for qs in (candidates.filter(family=perfume.family, gender__in=genders),
+               candidates.filter(brand=perfume.brand),
+               candidates.filter(gender__in=genders)):
+        if len(similar) >= 4:
+            break
+        similar += list(qs.exclude(pk__in=[perfume.pk, *[p.pk for p in similar]])[:4 - len(similar)])
 
     recent_ids = [pk for pk in get_recent(request) if pk != perfume.pk][:4]
     recent_map = {p.pk: p for p in Perfume.objects.active().with_stats()
