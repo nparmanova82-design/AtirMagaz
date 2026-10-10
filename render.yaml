@@ -1,0 +1,29 @@
+# Render Blueprint: veb-sayt + PostgreSQL baza (ikkalasi ham bepul tarifda)
+services:
+  - type: web
+    name: atirmagaz
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: bash build.sh
+    startCommand: gunicorn config.wsgi:application
+    envVars:
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: atirmagaz-db
+          property: connectionString
+      - key: DJANGO_SUPERUSER_USERNAME
+        value: admin
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false   # Render yaratishda admin parolini so'raydi
+
+databases:
+  - name: atirmagaz-db
+    plan: free
+    region: frankfurt
+    databaseName: atirmagaz
+    user: atirmagaz

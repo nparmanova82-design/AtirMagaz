@@ -5,6 +5,7 @@
 """
 import random
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -390,7 +391,8 @@ class Command(BaseCommand):
             "percent": 20, "min_total": 1_500_000, "description": "Kuzgi aksiya, 1.5 mln so'mdan"})
 
         User = get_user_model()
-        if not User.objects.filter(username="admin").exists():
+        # Serverda admin ensure_admin buyrug'i bilan, muhitdagi parol orqali yaratiladi
+        if settings.DEBUG and not User.objects.filter(username="admin").exists():
             User.objects.create_superuser("admin", "admin@atirmagaz.uz", "admin12345")
             if not quiet:
                 self.stdout.write("Admin yaratildi: admin / admin12345")

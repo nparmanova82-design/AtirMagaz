@@ -151,7 +151,8 @@ def _shape(shape):
 @register.simple_tag
 def bottle(perfume, css_class="bottle"):
     """Atir flakonini SVG ko'rinishida chizadi (rasm yuklanmagan bo'lsa)."""
-    if getattr(perfume, "image", None):
+    image = getattr(perfume, "image", None)
+    if image and image.storage.exists(image.name):
         return format_html('<img class="{}" src="{}" alt="{}" loading="lazy">',
                            css_class, perfume.image.url, str(perfume))
 

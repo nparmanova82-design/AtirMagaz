@@ -23,7 +23,7 @@ Sayt: http://127.0.0.1:8000/ · Admin panel: http://127.0.0.1:8000/admin/
 
 | Kim | Login | Parol |
 |---|---|---|
-| Administrator | `admin` | `admin12345` |
+| Administrator (faqat lokal) | `admin` | `admin12345` |
 
 Demo promokodlar: **ATIR10** (−10%), **KUZ20** (−20%, 1,5 mln so'mdan).
 
@@ -63,13 +63,35 @@ Do'kon nomi, telefon, manzil, ijtimoiy tarmoqlar va yetkazib berish narxlari —
 «Biz haqimizda» sahifasidagi hikoya, jamoa va raqamlar — `templates/pages/about.html`
 (hozir namunaviy matn turibdi).
 
-Production uchun: `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=0`, `DJANGO_ALLOWED_HOSTS` muhit o'zgaruvchilarini
-o'rnating va admin parolini almashtiring.
+## Render'ga joylash
+
+Loyihada tayyor Blueprint bor (`render.yaml`): veb-sayt + PostgreSQL baza, ikkalasi ham bepul tarifda,
+Frankfurt serverida.
+
+1. Quyidagi havolani oching va Render hisobingizga kiring (GitHub orqali kirish mumkin):
+   https://render.com/deploy?repo=https://github.com/nparmanova82-design/AtirMagaz
+2. **DJANGO_SUPERUSER_PASSWORD** maydoniga admin panel uchun parol yozing.
+3. **Deploy Blueprint** tugmasini bosing. 5–10 daqiqadan keyin sayt
+   `https://atirmagaz.onrender.com` (yoki Render ko'rsatgan manzil)da ochiladi.
+
+Har deployda `build.sh` ishlaydi: kutubxonalar, statik fayllar, migratsiya, demo katalog
+(faqat baza bo'sh bo'lsa) va admin (`admin` + siz kiritgan parol). GitHub'ga yangi commit
+yuborilsa, Render saytni avtomatik yangilaydi.
+
+**Bepul tarif cheklovlari:**
+- 15 daqiqa hech kim kirmasa, sayt «uxlaydi» — keyingi birinchi ochilish ~1 daqiqa kutadi.
+- Bepul PostgreSQL 30 kundan keyin to'xtaydi; ma'lumotlar o'chmasligi uchun undan keyin 14 kun
+  ichida bazani pullik tarifga o'tkazish kerak.
+- Admin orqali yuklangan rasmlar qayta deploy yoki uyquda o'chib ketadi (sayt o'rniga SVG flakonni
+  ko'rsatadi). Doimiy rasmlar uchun pullik tarifdagi disk yoki bulutli xotira kerak.
+
+Lokal `admin12345` paroli faqat kompyuteringizda (DEBUG rejimida) yaratiladi, serverda emas.
 
 ## Tuzilma
 
 ```
 config/      sozlamalar, asosiy marshrutlar
+build.sh     Render build skripti;  render.yaml — Render Blueprint
 shop/        brendlar, notalar, atirlar, hajmlar, sharhlar, katalog, test, SVG flakon (templatetags)
 orders/      savatcha (sessiyada), promokodlar, buyurtmalar, rasmiylashtirish, kuzatish
 pages/       statik sahifalar, aloqa formasi, obuna
